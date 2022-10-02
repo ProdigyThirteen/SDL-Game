@@ -1,48 +1,51 @@
+#include <stdio.h>
+#include <vector>
+#include "SDL.h"
+
 #include "Game.h"
+#include "TextureManager.h"
 
-game::game()
-{
-}
+game* game::s_pInstance = 0;
 
-game::~game()
-{
-}
-
-void game::init(const char* title, int width, int height)
+bool game::init(const char* title, int width, int height)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		printf("SDL_Init Error: %s", SDL_GetError());
-		return;
+		return false;
 	}
 	
 	if (!(m_pWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN)))
 	{
 		printf("SDL_CreateWindow Error: %s", SDL_GetError());
-		return;
+		return false;
 	}
 
 	if(!(m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_ACCELERATED)))
 	{
 		printf("SDL_CreateRenderer Error: %s", SDL_GetError());
-		return;
+		return false;
 	}
 
 	if (!(IMG_Init(IMG_INIT_PNG)))
 	{
 		printf("IMG_Init Error: %s", IMG_GetError());
-		return;
+		return false;
 	}
-
-	textureManager::Get()->loadTexture("assets/player/walk/down.png", "walk", m_pRenderer);
 	
-	m_screenWidth = width;
-	m_screenHeight = height;
+	textureManager::Get()->loadTexture("assets/player/walk/down.png", "walkDown", m_pRenderer);
+
+	m_gameObjects.push_back(new Player(new AssetLoader(100, 100, 64, 64, "walkDown")));
+	
+	
 	m_isRunning = true;
+	return true;
 }
 
 void game::cleanup()
 {
+	printf("Running cleanup...\n");
+	
 	m_isRunning = false;
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
@@ -68,7 +71,10 @@ void game::handleEvents()
 
 void game::update()
 {
-	m_currentFrame = int(((SDL_GetTicks() / 100) % framesOfAnimation));
+	for (auto& go : m_gameObjects)
+	{
+		go->update();
+	}
 }
 
 void game::render()
@@ -76,8 +82,11 @@ void game::render()
 	SDL_RenderClear(m_pRenderer);
 
 	SDL_SetRenderDrawColor(m_pRenderer, 0, 180, 180, 255);
-	
-	textureManager::Get()->drawFrame("walk", 100, 100, 64, 64, 1, m_currentFrame, m_pRenderer);
+
+	for (auto& go : m_gameObjects)
+	{
+		go->draw();
+	}
 
 	SDL_RenderPresent(m_pRenderer);
 }

@@ -8,13 +8,13 @@ void GameObject::load(int x, int y, int width, int height, std::string textureID
 	m_height = height;
 	m_textureID = textureID;
 
-	m_currentRow = 1;
+	m_currentCol = 1;
 	m_currentFrame = 1;
 }
 
 void GameObject::draw(SDL_Renderer* pRenderer)
 {
-	textureManager::Get()->drawFrame(m_textureID, m_x, m_y, m_width, m_height, m_currentRow, m_currentFrame, pRenderer);
+	textureManager::Get()->drawFrame(m_textureID, m_x, m_y, m_width, m_height, m_currentCol, m_currentFrame, pRenderer);
 }
 
 void GameObject::update()
