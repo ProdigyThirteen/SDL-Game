@@ -3,12 +3,14 @@
 #include <string>
 #include "GameObject.h"
 #include "AssetLoader.h"
+#include "Vec2.h"
 
 class SDLGameObject : public GameObject
 {
 protected:
-	int m_x;
-	int m_y;
+	Vec2 m_position;
+	Vec2 m_velocity;
+	Vec2 m_acceleration;
 	int m_width;
 	int m_height;
 	int m_currentRow;
@@ -19,7 +21,7 @@ public:
 	SDLGameObject(const AssetLoader* pParams);
 	
 	virtual void draw();
-	virtual void update() {};
-	virtual void clean() {};
+	virtual void update();
+	virtual void cleanup() {};
 };
 
