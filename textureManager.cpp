@@ -1,4 +1,4 @@
-#include "textureManager.h"
+#include "TextureManager.h"
 
 textureManager* textureManager::s_pInstance = 0;
 
@@ -11,7 +11,7 @@ bool textureManager::loadTexture(std::string fileName, std::string id, SDL_Rende
 		return false;
 	}
 
-	printf("%s loaded!", fileName.c_str());
+	printf("%s loaded!\n", fileName.c_str());
 
 	if (SDL_Texture* pTexture = SDL_CreateTextureFromSurface(pRenderer, pTempSurface))
 	{

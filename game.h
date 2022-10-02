@@ -4,7 +4,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
-#include "textureManager.h"
+#include "TextureManager.h"
 
 class game
 {

@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "game.h"
+#include "Game.h"
 
-game* g_game = 0;
+game* g_game = nullptr;
 
 int main(int, char**)
 {	
