@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SDLGameObject.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="AssetLoader.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SDLGameObject.h" />
     <ClInclude Include="TextureManager.h" />

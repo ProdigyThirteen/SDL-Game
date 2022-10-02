@@ -4,6 +4,7 @@
 
 #include "Game.h"
 #include "TextureManager.h"
+#include "InputHandler.h"
 
 game* game::s_pInstance = 0;
 
@@ -47,6 +48,7 @@ void game::cleanup()
 	printf("Running cleanup...\n");
 	
 	m_isRunning = false;
+	inputHandler::Get()->cleanup();
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
@@ -54,19 +56,7 @@ void game::cleanup()
 
 void game::handleEvents()
 {
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			m_isRunning = false;
-			break;
-
-		default:
-			break;
-		}
-	}
+	inputHandler::Get()->update();
 }
 
 void game::update()
