@@ -14,8 +14,6 @@ private:
 	static textureManager* s_pInstance;
 	
 public:
-	~textureManager();
-
 	static textureManager* Get()
 	{
 		if (s_pInstance == 0)
