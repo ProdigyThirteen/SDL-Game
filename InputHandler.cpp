@@ -15,7 +15,6 @@ inputHandler::inputHandler() : m_mousePosition(new Vec2(0, 0))
 
 void inputHandler::cleanup()
 {
-	delete m_mousePosition;
 }
 
 void inputHandler::update()

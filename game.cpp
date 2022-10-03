@@ -65,6 +65,9 @@ void game::update()
 	{
 		go->update();
 	}
+
+	if (inputHandler::Get()->isKeyDown(SDL_SCANCODE_ESCAPE))
+		m_isRunning = false;
 }
 
 void game::render()

@@ -53,10 +53,10 @@
     <ClInclude Include="SDLGameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vec2.h">
+    <ClInclude Include="InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputHandler.h">
+    <ClInclude Include="Vec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

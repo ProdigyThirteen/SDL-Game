@@ -15,13 +15,13 @@ class inputHandler
 {
 private:
 	inputHandler();
-	~inputHandler() { };
+	~inputHandler() { delete m_mousePosition; };
 
 	static inputHandler* s_pInstance;
 	
 	std::vector<bool> m_mouseButtonStates;
 	Vec2* m_mousePosition;
-	const Uint8* m_keystates;
+	const Uint8* m_keystates = 0;
 	
 	//keyboard events
 	void onKeyDown();
