@@ -12,10 +12,11 @@ private:
 	int m_height;
 
 	std::string m_textureID;
+	int m_framesOfAnimation;
 
 public:
-	AssetLoader(int x, int y, int width, int height, std::string textureID)
-		: m_x(x), m_y(y), m_width(width), m_height(height), m_textureID(textureID) 
+	AssetLoader(int x, int y, int width, int height, std::string textureID, int m_framesOfAnimation)
+	: m_x(x), m_y(y), m_width(width), m_height(height), m_textureID(textureID), m_framesOfAnimation(m_framesOfAnimation)
 	{}
 	
 	int getX () const { return m_x; };
@@ -23,4 +24,5 @@ public:
 	int getWidth() const { return m_width; };
 	int getHeight() const { return m_height; };
 	std::string getTextureID() const { return m_textureID; };
+	int getFramesOfAnimation() const { return m_framesOfAnimation; };
 };

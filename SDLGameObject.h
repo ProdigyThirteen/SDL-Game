@@ -11,6 +11,7 @@ protected:
 	Vec2 m_position;
 	Vec2 m_velocity;
 	Vec2 m_acceleration;
+	const int m_framesOfAnimation;
 	int m_width;
 	int m_height;
 	int m_currentRow;

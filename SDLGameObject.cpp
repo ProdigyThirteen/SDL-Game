@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Vec2.h"
 
-SDLGameObject::SDLGameObject(const AssetLoader* pParams) : GameObject(pParams), m_position(pParams->getX(), pParams->getY()), m_velocity(0, 0)
+SDLGameObject::SDLGameObject(const AssetLoader* pParams) : GameObject(pParams), m_position(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_framesOfAnimation(pParams->getFramesOfAnimation())
 {
 	m_width = pParams->getWidth();
 	m_height = pParams->getHeight();

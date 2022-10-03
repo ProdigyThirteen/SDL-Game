@@ -36,7 +36,7 @@ bool game::init(const char* title, int width, int height)
 	
 	textureManager::Get()->loadTexture("assets/player/walk/down.png", "walkDown", m_pRenderer);
 
-	m_gameObjects.push_back(new Player(new AssetLoader(100, 100, 64, 64, "walkDown")));
+	m_gameObjects.push_back(new Player(new AssetLoader(0, 0, 64, 64, "walkDown", 4)));
 	
 	
 	m_isRunning = true;
