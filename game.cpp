@@ -34,9 +34,10 @@ bool game::init(const char* title, int width, int height)
 		return false;
 	}
 	
-	textureManager::Get()->loadTexture("assets/player/walk/down.png", "walkDown", m_pRenderer);
+	textureManager::Get()->loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer);
+	textureManager::Get()->loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer);
 
-	m_gameObjects.push_back(new Player(new AssetLoader(0, 0, 64, 64, "walkDown", 4)));
+	m_gameObjects.push_back(new Player(new AssetLoader(0, 0, 48, 48, "playerIdle", 2)));
 	
 	
 	m_isRunning = true;

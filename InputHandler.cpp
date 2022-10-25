@@ -25,16 +25,6 @@ void inputHandler::update()
 	m_currentKeystates = SDL_GetKeyboardState(NULL);
 }
 
-//void inputHandler::onKeyDown()
-//{
-//	m_currentKeystates = SDL_GetKeyboardState(0);
-//}
-//
-//void inputHandler::onKeyUp()
-//{
-//	m_currentKeystates = SDL_GetKeyboardState(0);	
-//}
-
 bool inputHandler::onKeyDown(SDL_Scancode key)
 {
 	if (m_currentKeystates[key] == 1 && m_lastKeystates[key] == 0)
@@ -47,12 +37,6 @@ bool inputHandler::onKeyUp(SDL_Scancode key)
 	if (m_currentKeystates[key] == 0 && m_lastKeystates[key] == 1)
 		return true;
 	return false;
-}
-
-void inputHandler::onMouseMove(SDL_Event& event)
-{
-	m_mousePosition->setX(event.motion.x);
-	m_mousePosition->setY(event.motion.y);
 }
 
 bool inputHandler::isKeyDown(SDL_Scancode key)
@@ -69,6 +53,12 @@ bool inputHandler::isKeyDown(SDL_Scancode key)
 		}
 	}
 	return false;
+}
+
+void inputHandler::onMouseMove(SDL_Event& event)
+{
+	m_mousePosition->setX(event.motion.x);
+	m_mousePosition->setY(event.motion.y);
 }
 
 void inputHandler::onMouseButtonDown(SDL_Event& event)

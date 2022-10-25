@@ -41,6 +41,21 @@ void textureManager::draw(std::string id, int x, int y, int width, int height, S
 	SDL_RenderCopyEx(pRenderer, m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
 }
 
+void textureManager::drawRot(std::string id, int x, int y, int width, int height, float rotation, SDL_Renderer* pRenderer, SDL_RendererFlip flip)
+{
+	SDL_Rect srcRect;
+	SDL_Rect destRect;
+
+	srcRect.x = 0;
+	srcRect.y = 0;
+	srcRect.w = destRect.w = width;
+	srcRect.h = destRect.h = height;
+	destRect.x = x;
+	destRect.y = y;
+
+	SDL_RenderCopyEx(pRenderer, m_textureMap[id], &srcRect, &destRect, rotation, 0, flip);
+}
+
 void textureManager::drawFrame(std::string id, int x, int y, int width, int height, int currentCol, int currentFrame, SDL_Renderer* pRenderer, SDL_RendererFlip flip)
 {
 	SDL_Rect srcRect;
@@ -54,4 +69,19 @@ void textureManager::drawFrame(std::string id, int x, int y, int width, int heig
 	destRect.y = y;
 
 	SDL_RenderCopyEx(pRenderer, m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
+}
+
+void textureManager::drawFrameRot(std::string id, int x, int y, int width, int height, float rotation, int currentCol, int currentFrame, SDL_Renderer* pRenderer, SDL_RendererFlip flip)
+{
+	SDL_Rect srcRect;
+	SDL_Rect destRect;
+
+	srcRect.x = width * (currentCol - 1);
+	srcRect.y = height * (currentFrame);
+	srcRect.w = destRect.w = width;
+	srcRect.h = destRect.h = height;
+	destRect.x = x;
+	destRect.y = y;
+
+	SDL_RenderCopyEx(pRenderer, m_textureMap[id], &srcRect, &destRect, rotation, 0, flip);
 }
