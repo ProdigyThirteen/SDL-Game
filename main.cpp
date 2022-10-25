@@ -6,7 +6,7 @@ const int DELAY_TIME = 1000.0f / FPS;
 
 int main(int, char**)
 {	
-	
+		
 	Uint32 frameStart, frameTime;
 
 	printf("Attempting init...\n");

@@ -34,6 +34,10 @@ void Player::update()
 	else if (m_velocity.getY() > 0)
 		m_velocity.setY(0);
 
+	if (inputHandler::Get()->onKeyDown(SDL_SCANCODE_G))
+		m_velocity.setX(10);
+
+
 	SDLGameObject::update();
 }
 

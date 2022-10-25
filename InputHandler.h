@@ -8,7 +8,8 @@ enum mouse_buttons
 {
 	LEFT = 0,
 	MIDDLE = 1,
-	RIGHT = 2
+	RIGHT = 2,
+	MOUSEBUTTON_NUM_ITEMS = 3
 };
 
 class inputHandler
@@ -19,18 +20,12 @@ private:
 
 	static inputHandler* s_pInstance;
 	
-	std::vector<bool> m_mouseButtonStates;
-	Vec2* m_mousePosition;
-	const Uint8* m_keystates = 0;
+	bool m_mouseButtonStates[MOUSEBUTTON_NUM_ITEMS];
 	
-	//keyboard events
-	void onKeyDown();
-	void onKeyUp();
-
-	//mouse events
-	void onMouseMove(SDL_Event& event);
-	void onMouseButtonDown(SDL_Event& event);
-	void onMouseButtonUp(SDL_Event& event);
+	Vec2* m_mousePosition;
+	const Uint8* m_currentKeystates = nullptr;
+	Uint8* m_lastKeystates = nullptr;
+	
 
 public:
 	static inputHandler* Get()
@@ -49,5 +44,16 @@ public:
 	bool getMouseButtonState(int buttonNumber) { return m_mouseButtonStates[buttonNumber]; }
 	Vec2* getMousePosition() { return m_mousePosition; }
 
+	
+	//keyboard events
 	bool isKeyDown(SDL_Scancode key);
+	//void onKeyDown();
+	//void onKeyUp();
+	bool onKeyDown(SDL_Scancode key);
+	bool onKeyUp(SDL_Scancode key);
+
+	//mouse events
+	void onMouseMove(SDL_Event& event);
+	void onMouseButtonDown(SDL_Event& event);
+	void onMouseButtonUp(SDL_Event& event);
 };

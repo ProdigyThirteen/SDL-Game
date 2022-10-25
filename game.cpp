@@ -56,7 +56,35 @@ void game::cleanup()
 
 void game::handleEvents()
 {
-	inputHandler::Get()->update();
+	//inputHandler::Get()->update();
+
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+		case SDL_MOUSEMOTION:
+			inputHandler::Get()->onMouseMove(event);
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			inputHandler::Get()->onMouseButtonDown(event);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			inputHandler::Get()->onMouseButtonUp(event);
+			break;
+		case SDL_KEYDOWN:
+			inputHandler::Get()->onKeyDown(event.key.keysym.scancode);
+			break;
+		case SDL_KEYUP:
+			inputHandler::Get()->onKeyUp(event.key.keysym.scancode);
+			break;
+		case SDL_QUIT:
+			m_isRunning = false;
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void game::update()
@@ -66,8 +94,16 @@ void game::update()
 		go->update();
 	}
 
+	inputHandler::Get()->update();
+
 	if (inputHandler::Get()->isKeyDown(SDL_SCANCODE_ESCAPE))
 		m_isRunning = false;
+
+	if (inputHandler::Get()->onKeyDown(SDL_SCANCODE_W))
+		printf("W is pressed\n");
+	if (inputHandler::Get()->onKeyUp(SDL_SCANCODE_W))
+		printf("W is released\n");
+	
 }
 
 void game::render()
