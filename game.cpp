@@ -28,7 +28,10 @@ bool game::init(const char* title, int width, int height)
 		return false;
 	}
 
-	if (!(IMG_Init(IMG_INIT_PNG)))
+	int flags = IMG_INIT_PNG;
+	int initted = IMG_Init(flags);
+	
+	if (initted != flags)
 	{
 		printf("IMG_Init Error: %s", IMG_GetError());
 		return false;

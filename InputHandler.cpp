@@ -10,19 +10,17 @@ inputHandler::inputHandler() : m_mousePosition(new Vec2(0, 0))
 		m_mouseButtonStates[i] = false;
 
 	m_currentKeystates = SDL_GetKeyboardState(0);
-	m_lastKeystates = (Uint8*)malloc(SDL_NUM_SCANCODES);
+	m_lastKeystates = new Uint8[SDL_NUM_SCANCODES];
 }
 
 void inputHandler::cleanup()
 {
-	free(m_lastKeystates);
+	delete[] m_lastKeystates;
 }
 
 void inputHandler::update()
 {
 	SDL_memcpy(m_lastKeystates, m_currentKeystates, SDL_NUM_SCANCODES);
-	SDL_PumpEvents();
-	m_currentKeystates = SDL_GetKeyboardState(NULL);
 }
 
 bool inputHandler::onKeyDown(SDL_Scancode key)
@@ -66,17 +64,17 @@ void inputHandler::onMouseButtonDown(SDL_Event& event)
 	if (event.button.button == SDL_BUTTON_LEFT)
 	{
 		m_mouseButtonStates[LEFT] = true;
-		printf("Left mouse down\n");
+		//printf("Left mouse down\n");
 	}
 	if (event.button.button == SDL_BUTTON_MIDDLE)
 	{
 		m_mouseButtonStates[MIDDLE] = true;
-		printf("Middle mouse down\n");
+		//printf("Middle mouse down\n");
 	}
 	if (event.button.button == SDL_BUTTON_RIGHT)
-	{
+	{	
 		m_mouseButtonStates[RIGHT] = true;
-		printf("Right mouse down\n");
+		//printf("Right mouse down\n");
 	}
 }
 
@@ -85,16 +83,16 @@ void inputHandler::onMouseButtonUp(SDL_Event& event)
 	if (event.button.button == SDL_BUTTON_LEFT)
 	{
 		m_mouseButtonStates[LEFT] = false;
-		printf("Left mouse up\n");
+		//printf("Left mouse up\n");
 	}
 	if (event.button.button == SDL_BUTTON_MIDDLE)
 	{
 		m_mouseButtonStates[MIDDLE] = false;
-		printf("Middle mouse up\n");
+		//printf("Middle mouse up\n");
 	}
 	if (event.button.button == SDL_BUTTON_RIGHT)
 	{
 		m_mouseButtonStates[RIGHT] = false;
-		printf("Right mouse up\n");
+		//printf("Right mouse up\n");
 	}
 }
