@@ -2,20 +2,27 @@
 #include <stdio.h>
 #include <vector>
 
-inputHandler* inputHandler::s_pInstance = 0;
+bool inputHandler::m_mouseButtonStates[MOUSEBUTTON_NUM_ITEMS];
+Vec2* inputHandler::m_mousePosition;
+const Uint8* inputHandler::m_currentKeystates;
+Uint8* inputHandler::m_lastKeystates;
 
-inputHandler::inputHandler() : m_mousePosition(new Vec2(0, 0))
+void inputHandler::init()
 {
+	printf("Input Handler Initialising...\n");
 	for (int i = 0; i < MOUSEBUTTON_NUM_ITEMS; i++)
 		m_mouseButtonStates[i] = false;
-
+	
+	m_mousePosition = new Vec2(0, 0);
 	m_currentKeystates = SDL_GetKeyboardState(0);
 	m_lastKeystates = new Uint8[SDL_NUM_SCANCODES];
 }
 
 void inputHandler::cleanup()
 {
+	printf("Input Handler Cleaning Up...\n");
 	delete[] m_lastKeystates;
+	delete m_mousePosition;
 }
 
 void inputHandler::update()

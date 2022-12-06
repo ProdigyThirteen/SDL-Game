@@ -36,9 +36,13 @@ bool game::init(const char* title, int width, int height)
 		printf("IMG_Init Error: %s", IMG_GetError());
 		return false;
 	}
+
+	inputHandler::init();
 	
-	textureManager::Get()->loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer);
-	textureManager::Get()->loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer);
+	//textureManager::Get()->loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer);
+	//textureManager::Get()->loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer);
+	textureManager::loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer);
+	textureManager::loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer);
 
 	m_gameObjects.push_back(new Player(new AssetLoader(0, 0, 48, 48, "playerIdle", 2)));
 	
@@ -52,7 +56,7 @@ void game::cleanup()
 	printf("Running cleanup...\n");
 	
 	m_isRunning = false;
-	inputHandler::Get()->cleanup();
+	inputHandler::cleanup();
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
@@ -60,7 +64,7 @@ void game::cleanup()
 
 void game::handleEvents()
 {
-	//inputHandler::Get()->update();
+	//inputHandler::update();
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
@@ -68,19 +72,19 @@ void game::handleEvents()
 		switch (event.type)
 		{
 		case SDL_MOUSEMOTION:
-			inputHandler::Get()->onMouseMove(event);
+			inputHandler::onMouseMove(event);
 			break;
 		case SDL_MOUSEBUTTONDOWN:
-			inputHandler::Get()->onMouseButtonDown(event);
+			inputHandler::onMouseButtonDown(event);
 			break;
 		case SDL_MOUSEBUTTONUP:
-			inputHandler::Get()->onMouseButtonUp(event);
+			inputHandler::onMouseButtonUp(event);
 			break;
 		case SDL_KEYDOWN:
-			inputHandler::Get()->onKeyDown(event.key.keysym.scancode);
+			inputHandler::onKeyDown(event.key.keysym.scancode);
 			break;
 		case SDL_KEYUP:
-			inputHandler::Get()->onKeyUp(event.key.keysym.scancode);
+			inputHandler::onKeyUp(event.key.keysym.scancode);
 			break;
 		case SDL_QUIT:
 			m_isRunning = false;
@@ -98,14 +102,14 @@ void game::update()
 		go->update();
 	}
 
-	inputHandler::Get()->update();
+	inputHandler::update();
 
-	if (inputHandler::Get()->isKeyDown(SDL_SCANCODE_ESCAPE))
+	if (inputHandler::isKeyDown(SDL_SCANCODE_ESCAPE))
 		m_isRunning = false;
 
-	if (inputHandler::Get()->onKeyDown(SDL_SCANCODE_W))
+	if (inputHandler::onKeyDown(SDL_SCANCODE_W))
 		printf("W is pressed\n");
-	if (inputHandler::Get()->onKeyUp(SDL_SCANCODE_W))
+	if (inputHandler::onKeyUp(SDL_SCANCODE_W))
 		printf("W is released\n");
 	
 }

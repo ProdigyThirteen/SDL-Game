@@ -15,43 +15,29 @@ enum mouse_buttons
 class inputHandler
 {
 private:
-	inputHandler();
-	~inputHandler() { delete m_mousePosition; };
-
-	static inputHandler* s_pInstance;
+	static bool m_mouseButtonStates[MOUSEBUTTON_NUM_ITEMS];
 	
-	bool m_mouseButtonStates[MOUSEBUTTON_NUM_ITEMS];
-	
-	Vec2* m_mousePosition;
-	const Uint8* m_currentKeystates = nullptr;
-	Uint8* m_lastKeystates = nullptr;
+	static Vec2* m_mousePosition;
+	static const Uint8* m_currentKeystates;
+	static Uint8* m_lastKeystates;
 	
 
 public:
-	static inputHandler* Get()
-	{
-		if (s_pInstance == 0)
-		{
-			s_pInstance = new inputHandler();
-			return s_pInstance;
-		}
-		return s_pInstance;
-	}
+	static void init();
+	static void update();
+	static void cleanup();
 
-	void update();
-	void cleanup();
-
-	bool getMouseButtonState(int buttonNumber) { return m_mouseButtonStates[buttonNumber]; }
-	Vec2* getMousePosition() { return m_mousePosition; }
+	static bool getMouseButtonState(int buttonNumber) { return m_mouseButtonStates[buttonNumber]; }
+	static Vec2* getMousePosition() { return m_mousePosition; }
 
 	
 	//keyboard events
-	bool isKeyDown(SDL_Scancode key);
-	bool onKeyDown(SDL_Scancode key);
-	bool onKeyUp(SDL_Scancode key);
+	static bool isKeyDown(SDL_Scancode key);
+	static bool onKeyDown(SDL_Scancode key);
+	static bool onKeyUp(SDL_Scancode key);
 
 	//mouse events
-	void onMouseMove(SDL_Event& event);
-	void onMouseButtonDown(SDL_Event& event);
-	void onMouseButtonUp(SDL_Event& event);
+	static void onMouseMove(SDL_Event& event);
+	static void onMouseButtonDown(SDL_Event& event);
+	static void onMouseButtonUp(SDL_Event& event);
 };

@@ -1,7 +1,9 @@
 #include "TextureManager.h"
 #include "SDL_Image.h"
 
-textureManager* textureManager::s_pInstance = 0;
+//textureManager* textureManager::s_pInstance = 0;
+
+std::map<std::string, SDL_Texture*> textureManager::m_textureMap;
 
 bool textureManager::loadTexture(std::string fileName, std::string id, SDL_Renderer* pRenderer)
 {
