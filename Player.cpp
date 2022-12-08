@@ -16,6 +16,7 @@ void Player::setRotation()
 	m_rotation = atan2(y, x) * 180 / 3.14159265;
 }
 
+
 void Player::setTexture()
 {
 	switch (m_playerState)
