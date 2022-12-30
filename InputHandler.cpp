@@ -62,8 +62,8 @@ bool inputHandler::isKeyDown(SDL_Scancode key)
 
 void inputHandler::onMouseMove(SDL_Event& event)
 {
-	m_mousePosition->setX(event.motion.x);
-	m_mousePosition->setY(event.motion.y);
+	m_mousePosition->x = event.motion.x;
+	m_mousePosition->y = event.motion.y;
 }
 
 void inputHandler::onMouseButtonDown(SDL_Event& event)
@@ -71,17 +71,14 @@ void inputHandler::onMouseButtonDown(SDL_Event& event)
 	if (event.button.button == SDL_BUTTON_LEFT)
 	{
 		m_mouseButtonStates[LEFT] = true;
-		//printf("Left mouse down\n");
 	}
 	if (event.button.button == SDL_BUTTON_MIDDLE)
 	{
 		m_mouseButtonStates[MIDDLE] = true;
-		//printf("Middle mouse down\n");
 	}
 	if (event.button.button == SDL_BUTTON_RIGHT)
 	{	
 		m_mouseButtonStates[RIGHT] = true;
-		//printf("Right mouse down\n");
 	}
 }
 
@@ -90,16 +87,13 @@ void inputHandler::onMouseButtonUp(SDL_Event& event)
 	if (event.button.button == SDL_BUTTON_LEFT)
 	{
 		m_mouseButtonStates[LEFT] = false;
-		//printf("Left mouse up\n");
 	}
 	if (event.button.button == SDL_BUTTON_MIDDLE)
 	{
 		m_mouseButtonStates[MIDDLE] = false;
-		//printf("Middle mouse up\n");
 	}
 	if (event.button.button == SDL_BUTTON_RIGHT)
 	{
 		m_mouseButtonStates[RIGHT] = false;
-		//printf("Right mouse up\n");
 	}
 }

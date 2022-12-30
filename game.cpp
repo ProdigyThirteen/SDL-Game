@@ -1,14 +1,16 @@
-#include <stdio.h>
-#include <vector>
 #include "SDL.h"
-
+#include "Config.h"
 #include "Game.h"
+#include "UI.h"
 #include "TextureManager.h"
 #include "InputHandler.h"
+#include "Player.h"
+#include "Wall.h"
+#include "Floor.h"
 
 game* game::s_pInstance = 0;
 
-bool game::init(const char* title, int width, int height)
+bool game::init()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
@@ -16,7 +18,7 @@ bool game::init(const char* title, int width, int height)
 		return false;
 	}
 	
-	if (!(m_pWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN)))
+	if (!(m_pWindow = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)))
 	{
 		printf("SDL_CreateWindow Error: %s", SDL_GetError());
 		return false;
@@ -37,26 +39,75 @@ bool game::init(const char* title, int width, int height)
 		return false;
 	}
 
-	inputHandler::init();
+	inputHandler::init();	
 	
-	//textureManager::Get()->loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer);
-	//textureManager::Get()->loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer);
-	textureManager::loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer);
-	textureManager::loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer);
-
-	m_gameObjects.push_back(new Player(new AssetLoader(0, 0, 48, 48, "playerIdle", 2)));
-	
+	loadTextures();
+	createObjects();
 	
 	m_isRunning = true;
 	return true;
 }
 
+void game::loadTextures()
+{
+	textureManager::loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer, 1);
+	textureManager::loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer, 2);
+	textureManager::loadTexture("assets/world/Wall.png", "wall", m_pRenderer, 1);
+	textureManager::loadTexture("assets/world/Floor.png", "floor", m_pRenderer, 1);
+	textureManager::loadTexture("assets/BulletProjectile.png", "bullet", m_pRenderer, 1);
+}
+
+void game::createObjects()
+{
+	const int adjustedWidth = SCREEN_WIDTH / 16;
+	const int adjustedHeight = SCREEN_HEIGHT / 16;
+	// Create floor
+	for (int i = 0; i < adjustedWidth; i++)
+	{
+		for (int j = 0; j < adjustedHeight; j++)
+		{
+			addObject(std::make_shared<Floor>(new AssetLoader(i * 16, j * 16, 16, 16, "floor")));
+		}
+	}
+
+	// Create walls
+	for (int i = 0; i < adjustedWidth; i++)
+	{
+		addObject(std::make_shared<Wall>(new AssetLoader(i * 16, 0, 16, 16, "wall")));
+		addObject(std::make_shared<Wall>(new AssetLoader(i * 16, SCREEN_HEIGHT - 16, 16, 16, "wall")));
+	}
+
+	for (int i = 0; i < adjustedHeight; i++)
+	{
+		addObject(std::make_shared<Wall>(new AssetLoader(0, i * 16, 16, 16, "wall")));
+		addObject(std::make_shared<Wall>(new AssetLoader(SCREEN_WIDTH - 16, i * 16, 16, 16, "wall")));
+	}
+
+	
+	addObject(std::make_shared<Player>(new AssetLoader(100, 100, 48, 48, "playerIdle")));
+}
+
+void game::addObject(std::shared_ptr<SDLGameObject> obj)
+{
+	m_newObjects.push_back(obj);
+}
+
+void game::removeObject(std::shared_ptr<SDLGameObject> obj)
+{
+	m_deadObjects.push_back(obj);
+}
+
 void game::cleanup()
 {
 	printf("Running cleanup...\n");
-	
 	m_isRunning = false;
 	inputHandler::cleanup();
+	
+	// Clear all vectors
+	m_gameObjects.clear();
+	m_newObjects.clear();
+	m_deadObjects.clear();
+	
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
@@ -97,20 +148,34 @@ void game::handleEvents()
 
 void game::update()
 {
+	// Update objects
 	for (auto& go : m_gameObjects)
 	{
+		go->checkCollisions();
 		go->update();
 	}
+
+	// Remove objects
+	for (auto& go : m_deadObjects)
+	{
+		m_gameObjects.erase(std::remove(m_gameObjects.begin(), m_gameObjects.end(), go), m_gameObjects.end());
+	}
+
+	m_deadObjects.clear();
+
+	// Add objects
+	for (auto& go : m_newObjects)
+	{
+		m_gameObjects.push_back(go);
+	}
+
+	m_newObjects.clear();
+	
 
 	inputHandler::update();
 
 	if (inputHandler::isKeyDown(SDL_SCANCODE_ESCAPE))
 		m_isRunning = false;
-
-	if (inputHandler::onKeyDown(SDL_SCANCODE_W))
-		printf("W is pressed\n");
-	if (inputHandler::onKeyUp(SDL_SCANCODE_W))
-		printf("W is released\n");
 	
 }
 

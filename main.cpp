@@ -2,35 +2,34 @@
 #include "Game.h"
 
 const int FPS = 60;
-const int DELAY_TIME = 1000.0f / FPS;
+const float DELAY_TIME = 1000.0f / FPS;
 
 int main(int, char**)
 {	
-		
 	Uint32 frameStart, frameTime;
 
 	printf("Attempting init...\n");
-	if (game::Get()->init("Game", 1280, 720))
+	if (game::Instance()->init())
 	{
 		printf("Init success!\n");
-		while (game::Get()->isRunning())
+		while (game::Instance()->isRunning())
 		{
 			frameStart = SDL_GetTicks();
-			game::Get()->handleEvents();
-			game::Get()->update();
-			game::Get()->render();
+			game::Instance()->handleEvents();
+			game::Instance()->update();
+			game::Instance()->render();
 
 			frameTime = SDL_GetTicks() - frameStart;
 			
 			if (frameTime < DELAY_TIME)
 			{
-				SDL_Delay((int)(DELAY_TIME - frameTime));
+				SDL_Delay((DELAY_TIME - frameTime));
 			}
 		}		
 	}
 
 
-	game::Get()->cleanup();
+	game::Instance()->cleanup();
 	
 	return 0;
 }
