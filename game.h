@@ -6,7 +6,7 @@
 
 #include "SDL.h"
 #include "Config.h"
-#include "TextureManager.h"
+#include "Renderer.h"
 #include "Player.h"
 #include "SDLGameObject.h"
 
@@ -14,21 +14,24 @@ class game
 {
 private:
 	game() {};
-
-	const char* TITLE = "Game";
-	const int SCREEN_WIDTH = 1280;
-	const int SCREEN_HEIGHT = 720;
 	
 	void loadTextures();
-	void createObjects();
+	//void createObjects();
 
 	static game* s_pInstance;
 	
+	// Game window and view
 	SDL_Window* m_pWindow = nullptr;
 	SDL_Renderer* m_pRenderer = nullptr;
+	Vec2 m_CameraPos = Vec2(0, 0);
 
 	bool m_isRunning = false;
 	int m_currentFrame = 0;
+
+	// Delta time
+	int m_lastTime = 0;
+	int m_currentTime = 0;
+	float m_deltaTime = 0.0f;
 
 	// Game objects
 	std::vector<std::shared_ptr<SDLGameObject>> m_gameObjects; // Main game object vector
@@ -40,7 +43,7 @@ public:
 
 	static game* Instance()
 	{
-		if (s_pInstance == 0)
+		if (s_pInstance == nullptr)
 		{
 			s_pInstance = new game();
 			return s_pInstance;
@@ -53,12 +56,19 @@ public:
 	void update();
 	void handleEvents();
 	void cleanup();
+	void tick();
 
+	// Getters
 	bool isRunning() { return m_isRunning; }
 	SDL_Renderer* getRenderer() { return m_pRenderer; }
+	Vec2 getCameraPos() { return m_CameraPos; }
+	void setCameraPos(Vec2 pos) { m_CameraPos = pos; }
+	float getDeltaTime() { return m_deltaTime; }
+	std::vector<std::shared_ptr<SDLGameObject>> getGameObjects() { return m_gameObjects; }
 
+	// Object management
 	void addObject(std::shared_ptr<SDLGameObject> obj);
 	void removeObject(std::shared_ptr<SDLGameObject> obj);
-	std::vector<std::shared_ptr<SDLGameObject>> getGameObjects() { return m_gameObjects; }
+	
 };
 

@@ -40,6 +40,6 @@ void CircleCollider::Update()
 void CircleCollider::Debug() const
 {
 	SDL_SetRenderDrawColor(game::Instance()->getRenderer(), 255, 0, 0, 255);
-	DrawCircle(game::Instance()->getRenderer(), (int)m_position->x + offset.x, (int)m_position->y + offset.y, m_radius);	
+	DrawCircle(game::Instance()->getRenderer(), (int)m_position->x + offset.x - game::Instance()->getCameraPos().x, (int)m_position->y + offset.y - game::Instance()->getCameraPos().y, m_radius);
 	SDL_SetRenderDrawColor(game::Instance()->getRenderer(), 0, 180, 180, 255);
 }

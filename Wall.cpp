@@ -1,5 +1,5 @@
 #include "Wall.h"
-#include "textureManager.h"
+#include "Renderer.h"
 #include "game.h"
 #include "RectCollider.h"
 
@@ -12,7 +12,7 @@ Wall::Wall(const AssetLoader* pParams)
 void Wall::draw()
 {
 	//m_pCollider->Debug();
-	textureManager::draw(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, game::Instance()->getRenderer());
+	Renderer::draw(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, game::Instance()->getRenderer());
 }
 
 void Wall::update()

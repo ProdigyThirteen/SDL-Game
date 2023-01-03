@@ -1,0 +1,108 @@
+#include "MapLoader.h"
+
+#include <stdio.h> // printf
+#include <memory> // std::shared_ptr, std::make_shared
+#include "Config.h" // SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE
+#include "game.h" // game::addObject
+#include "AssetLoader.h" // AssetLoader
+
+// Objects to be created
+#include "Player.h"
+#include "Wall.h"
+#include "Tilemap.h"
+
+// I totally didn't find this on stackoverflow, I swear
+Uint32 MapLoader::getPixel(SDL_Surface* surface, int x, int y)
+{
+	int bpp = surface->format->BytesPerPixel;
+	/* Here p is the address to the pixel we want to retrieve */
+	Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
+
+	switch (bpp)
+	{
+	case 1:
+		return *p;
+		break;
+
+	case 2:
+		return *(Uint16*)p;
+		break;
+
+	case 3:
+		if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+			return p[0] << 16 | p[1] << 8 | p[2];
+		else
+			return p[0] | p[1] << 8 | p[2] << 16;
+		break;
+
+	case 4:
+		return *(Uint32*)p;
+		break;
+
+	default:
+		return 0;       /* shouldn't happen, but avoids warnings */
+	}
+}
+
+bool MapLoader::loadMap(const char* path)
+{
+	SDL_Surface* surface = IMG_Load(path);
+	if (surface == NULL)
+	{
+		printf("IMG_Load Error: %s", IMG_GetError());
+		return false;
+	}
+
+	// Player position
+	int playerX = 0;
+	int playerY = 0;
+
+	// Tilemap size
+	int tilemapWidth = surface->w;
+	int tilemapHeight = surface->h;
+
+	// Create tilemap
+	std::shared_ptr<Tilemap> tilemap = std::make_shared<Tilemap>(tilemapWidth, tilemapHeight);
+
+	for (int y = 0; y < tilemapHeight; y++)
+	{
+		for (int x = 0; x < tilemapWidth; x++)
+		{
+			Uint32 pixel = getPixel(surface, x, y);
+			Uint8 r, g, b;
+			SDL_GetRGB(pixel, surface->format, &r, &g, &b);
+
+			if (r == 255 && g == 255 && b == 255)
+			{
+				game::Instance()->addObject(std::make_shared<Wall>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, "wall")));
+				tilemap.get()->setTile(x, y, WALL);
+			}
+			else if (r == 0 && g == 0 && b == 0)
+			{
+				// Floor
+				tilemap.get()->setTile(x, y, FLOOR);
+			}
+			else if (r == 255 && g == 0 && b == 0)
+			{
+				// Store the player position and place a floor tile
+				playerX = x * TILE_SIZE;
+				playerY = y * TILE_SIZE;
+				tilemap.get()->setTile(x, y, FLOOR);
+			}
+			else
+			{
+				printf("Unknown color: %d, %d, %d at X: %i Y: %i\n", r, g, b, x, y);
+				return false;
+			}
+		}
+	}
+	
+	// Add the tilemap to the game
+	game::Instance()->addObject(tilemap);
+
+	// Create the player to ensure it's on top of everything
+	game::Instance()->addObject(std::make_shared<Player>(new AssetLoader(playerX, playerY, 48, 48, "playerIdle")));
+
+	SDL_FreeSurface(surface);
+	return true;
+}

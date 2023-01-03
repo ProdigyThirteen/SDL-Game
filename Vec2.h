@@ -68,6 +68,16 @@ struct Vec2
 		return (float)sqrt(x * x + y * y);
 	}
 
+	void SetLength(float length)
+	{
+		float currentLength = Length();
+		if (currentLength != 0)
+		{
+			x *= length / currentLength;
+			y *= length / currentLength;
+		}
+	}
+
 	float LengthSq() const
 	{
 		return x * x + y * y;

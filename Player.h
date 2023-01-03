@@ -20,10 +20,10 @@ private:
 	void setTexture();
 
 	// Gun variables
-	const int m_bulletOffset = 10; // Distance from player to spawn bullet
-	const int m_fireRate = 10; // How many frames between each bullet
+	const int m_bulletOffset = 48; // Distance from player to spawn bullet
+	const int m_fireRate = 8; // How many frames between each bullet
 	int m_fireRateCounter = 0;
-	const int m_bulletSpeed = 10; 
+	const int m_bulletSpeed = 600; 
 	
 public:
 	Player(const AssetLoader* pParams);

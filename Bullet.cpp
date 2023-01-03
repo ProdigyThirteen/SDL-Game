@@ -1,6 +1,6 @@
 #include "Bullet.h"
 #include "CircleCollider.h"
-#include "textureManager.h"
+#include "Renderer.h"
 #include "game.h"
 
 
@@ -8,6 +8,9 @@ Bullet::Bullet(const AssetLoader* pParams)
 	: SDLGameObject(pParams, false, new CircleCollider(m_position, 4, 0, 0, false, "bullet"))
 {
 	m_pCollider->Update();
+	m_friction = 0;
+	m_maxSpeed = 1000;
+	m_speed = 1000;
 }
 
 Bullet::~Bullet()
@@ -17,7 +20,7 @@ Bullet::~Bullet()
 void Bullet::draw()
 {
 	//m_pCollider->Debug();
-	textureManager::draw(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, game::Instance()->getRenderer());
+	Renderer::draw(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, game::Instance()->getRenderer());
 }
 
 void Bullet::update()

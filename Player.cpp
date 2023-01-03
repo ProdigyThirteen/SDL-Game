@@ -1,24 +1,28 @@
 #include <string>
 #include <memory>
 #include "SDL.h"
+#include "Config.h"
 #include "Player.h"
 #include "InputHandler.h"
-#include "textureManager.h"
+#include "Renderer.h"
 #include "Game.h"
 #include "CircleCollider.h"
 #include "Bullet.h"
 
 Player::Player(const AssetLoader* pParams) 
-	: SDLGameObject(pParams, false, new CircleCollider(m_position, 9, 24, 24, false, "player"))
+	: SDLGameObject(pParams, false, new CircleCollider(m_position, 8, 24, 24, false, "player"))
 {
 	m_lastSafeLocation = m_position;
+	m_friction = 10;
+	m_maxSpeed = 80;
+	m_speed = 80;
 }
 
 void Player::setRotation()
 {
 	Vec2* vec = inputHandler::getMousePosition();
-	float x = vec->x - (m_position.x + m_width / 2);
-	float y = vec->y - (m_position.y + m_height / 2);
+	float x = vec->x - (m_position.x + m_width / 2) + game::Instance()->getCameraPos().x;
+	float y = vec->y - (m_position.y + m_height / 2) + game::Instance()->getCameraPos().y;
 	m_rotation = (float)(atan2(y, x) * 180 / M_PI);
 }
 
@@ -38,15 +42,15 @@ void Player::setTexture()
 
 void Player::draw()
 {
-	//m_pCollider->Debug();
+	m_pCollider->Debug();
 	switch (m_playerState)
 	{
 	case IDLE:
-		textureManager::drawRot(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, m_rotation, game::Instance()->getRenderer());
+		Renderer::drawRot(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, m_rotation, game::Instance()->getRenderer());
 		break;
 
 	case SHOOTING:
-		textureManager::drawFrameRot(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, m_rotation, m_currentRow, game::Instance()->getRenderer());
+		Renderer::drawFrameRot(m_textureID, (int)m_position.x , (int)m_position.y, m_width, m_height, m_rotation, m_currentRow, game::Instance()->getRenderer());
 		break;
 	}
 }
@@ -65,24 +69,24 @@ void Player::update()
 	if (!m_bIsColliding)
 	{		
 		if (inputHandler::isKeyDown(SDL_SCANCODE_RIGHT) || inputHandler::isKeyDown(SDL_SCANCODE_D))
-			m_velocity.x = 2;
-		else if (m_velocity.x > 0)
-			m_velocity.x = 0;
+			m_acceleration.x += m_speed;
+		/*else if (m_velocity.x > 0)
+			m_velocity.x = 0;*/
 	
 		if (inputHandler::isKeyDown(SDL_SCANCODE_LEFT) || inputHandler::isKeyDown(SDL_SCANCODE_A))
-			m_velocity.x = -2;
-		else if (m_velocity.x < 0)
-			m_velocity.x = 0;
+			m_acceleration.x += -m_speed;
+		//else if (m_velocity.x < 0)
+		//	m_velocity.x = 0;
 
 		if (inputHandler::isKeyDown(SDL_SCANCODE_UP) || inputHandler::isKeyDown(SDL_SCANCODE_W))
-			m_velocity.y = -2;
-		else if (m_velocity.y < 0)
-			m_velocity.y = 0;
+			m_acceleration.y += -m_speed;
+		//else if (m_velocity.y < 0)
+		//	m_velocity.y = 0;
 
 		if (inputHandler::isKeyDown(SDL_SCANCODE_DOWN) || inputHandler::isKeyDown(SDL_SCANCODE_S))
-			m_velocity.y = 2;
-		else if (m_velocity.y > 0)
-			m_velocity.y = 0;
+			m_acceleration.y += m_speed;
+		//else if (m_velocity.y > 0)
+		//	m_velocity.y = 0;
 	}
 
 	// Handle shooting
@@ -97,8 +101,8 @@ void Player::update()
 			
 			// Calculate bullet direction
 			Vec2* vec = inputHandler::getMousePosition();
-			float x = vec->x - (m_position.x + m_width / 2);
-			float y = vec->y - (m_position.y + m_height / 2);
+			float x = vec->x - (m_position.x + m_width / 2) + game::Instance()->getCameraPos().x;
+			float y = vec->y - (m_position.y + m_height / 2) + game::Instance()->getCameraPos().y;
 			float angle = (float)(atan2(y, x) * 180 / M_PI);
 			Vec2 direction = Vec2(cos(angle * M_PI / 180), sin(angle * M_PI / 180));
 			direction.Normalize();
@@ -130,6 +134,9 @@ void Player::update()
 	// Update parent class and collider
 	SDLGameObject::update();
 	m_pCollider->Update();
+
+	// Update the camera
+	game::Instance()->setCameraPos(Vec2(m_position.x + m_width / 2 - SCREEN_WIDTH / 2, m_position.y + m_height / 2 - SCREEN_HEIGHT / 2));
 }
 
 void Player::cleanup()

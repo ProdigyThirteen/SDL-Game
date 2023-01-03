@@ -13,6 +13,9 @@ protected:
 	Vec2 m_position;
 	Vec2 m_velocity;
 	Vec2 m_acceleration;
+	float m_friction = 0;
+	int m_maxSpeed = 0;
+	int m_speed = 0;
 	
 	int m_width;
 	int m_height;
@@ -28,6 +31,7 @@ protected:
 public:
 	SDLGameObject(const AssetLoader* pParams, const bool isStaticObject, Collider* pCollider);
 	SDLGameObject(const AssetLoader* pParams, const bool isStaticObject);
+	SDLGameObject(const bool isStaticObject);
 	~SDLGameObject();
 	
 	virtual void draw() = 0;

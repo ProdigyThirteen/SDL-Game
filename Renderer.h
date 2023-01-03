@@ -12,11 +12,11 @@ struct textureData {
 	int currentFrame = 0;
 };
 
-class textureManager
+class Renderer
 {
 private:
-	static std::map<std::string, textureData*> m_textureMap;
 	//static textureManager* s_pInstance;
+	static std::map<std::string, textureData*> m_textureMap;
 	
 public:
 	static bool loadTexture(std::string fileName, std::string id, SDL_Renderer* pRenderer, int frames);
@@ -28,4 +28,10 @@ public:
 	static void drawFrame(std::string id, int x, int y, int width, int height, int currentCol, SDL_Renderer* pRenderer, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	
 	static void drawFrameRot(std::string id, int x, int y, int width, int height, float rotation, int currentCol, SDL_Renderer* pRenderer, SDL_RendererFlip flip = SDL_FLIP_NONE);
+
+	static void drawTilemap(SDL_Renderer* renderer);
+
+	static int getDrawCount();
+
+	static SDL_Texture* getTexture(std::string id);
 };

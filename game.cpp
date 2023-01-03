@@ -1,14 +1,12 @@
-#include "SDL.h"
-#include "Config.h"
+#include "SDL.h" // SDL_Init, SDL_CreateWindow, SDL_CreateRenderer, SDL_SetRenderDrawColor, SDL_RenderClear, SDL_RenderPresent, SDL_DestroyRenderer, SDL_DestroyWindow, SDL_Quit
 #include "Game.h"
-#include "UI.h"
-#include "TextureManager.h"
-#include "InputHandler.h"
-#include "Player.h"
-#include "Wall.h"
-#include "Floor.h"
+#include "Config.h" // SCREEN_WIDTH, SCREEN_HEIGHT
+#include "Renderer.h" // loadTexture
+#include "InputHandler.h" // Input events
+#include "MapLoader.h" // loadMap
+#include <iostream>
 
-game* game::s_pInstance = 0;
+game* game::s_pInstance = nullptr;
 
 bool game::init()
 {
@@ -42,7 +40,15 @@ bool game::init()
 	inputHandler::init();	
 	
 	loadTextures();
-	createObjects();
+
+	//if (!MapLoader::loadMap("levels/test.png"))
+	if (!MapLoader::loadMap("levels/benchmark.png"))
+	{
+		printf("Error loading map\n");
+		return false;
+	}
+	 
+	printf("Total objects: %I64d\n", m_newObjects.size());
 	
 	m_isRunning = true;
 	return true;
@@ -50,41 +56,11 @@ bool game::init()
 
 void game::loadTextures()
 {
-	textureManager::loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer, 1);
-	textureManager::loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer, 2);
-	textureManager::loadTexture("assets/world/Wall.png", "wall", m_pRenderer, 1);
-	textureManager::loadTexture("assets/world/Floor.png", "floor", m_pRenderer, 1);
-	textureManager::loadTexture("assets/BulletProjectile.png", "bullet", m_pRenderer, 1);
-}
-
-void game::createObjects()
-{
-	const int adjustedWidth = SCREEN_WIDTH / 16;
-	const int adjustedHeight = SCREEN_HEIGHT / 16;
-	// Create floor
-	for (int i = 0; i < adjustedWidth; i++)
-	{
-		for (int j = 0; j < adjustedHeight; j++)
-		{
-			addObject(std::make_shared<Floor>(new AssetLoader(i * 16, j * 16, 16, 16, "floor")));
-		}
-	}
-
-	// Create walls
-	for (int i = 0; i < adjustedWidth; i++)
-	{
-		addObject(std::make_shared<Wall>(new AssetLoader(i * 16, 0, 16, 16, "wall")));
-		addObject(std::make_shared<Wall>(new AssetLoader(i * 16, SCREEN_HEIGHT - 16, 16, 16, "wall")));
-	}
-
-	for (int i = 0; i < adjustedHeight; i++)
-	{
-		addObject(std::make_shared<Wall>(new AssetLoader(0, i * 16, 16, 16, "wall")));
-		addObject(std::make_shared<Wall>(new AssetLoader(SCREEN_WIDTH - 16, i * 16, 16, 16, "wall")));
-	}
-
-	
-	addObject(std::make_shared<Player>(new AssetLoader(100, 100, 48, 48, "playerIdle")));
+	Renderer::loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer, 1);
+	Renderer::loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer, 2);
+	Renderer::loadTexture("assets/world/Wall.png", "wall", m_pRenderer, 1);
+	Renderer::loadTexture("assets/world/Floor.png", "floor", m_pRenderer, 1);
+	Renderer::loadTexture("assets/BulletProjectile.png", "bullet", m_pRenderer, 1);
 }
 
 void game::addObject(std::shared_ptr<SDLGameObject> obj)
@@ -115,8 +91,6 @@ void game::cleanup()
 
 void game::handleEvents()
 {
-	//inputHandler::update();
-
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -148,11 +122,14 @@ void game::handleEvents()
 
 void game::update()
 {
+	// Update delta time
+	tick();
+	
 	// Update objects
 	for (auto& go : m_gameObjects)
 	{
-		go->checkCollisions();
 		go->update();
+		go->checkCollisions();
 	}
 
 	// Remove objects
@@ -185,11 +162,18 @@ void game::render()
 
 	SDL_SetRenderDrawColor(m_pRenderer, 0, 180, 180, 255);
 
-	for (auto& go : m_gameObjects)
+	for (auto& obj : m_gameObjects)
 	{
-		go->draw();
+		obj->draw();
 	}
 
 	SDL_RenderPresent(m_pRenderer);
 }
 
+void game::tick()
+{
+	// Calculate delta time
+	m_lastTime = m_currentTime;
+	m_currentTime = SDL_GetTicks();
+	m_deltaTime = (m_currentTime - m_lastTime) / 1000.0f;
+}

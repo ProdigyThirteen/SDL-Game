@@ -138,12 +138,14 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RectCollider.cpp" />
     <ClCompile Include="SDLGameObject.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
@@ -158,10 +160,12 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="MapLoader.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RectCollider.h" />
     <ClInclude Include="SDLGameObject.h" />
-    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Tilemap.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />

@@ -21,10 +21,21 @@ SDLGameObject::SDLGameObject(const AssetLoader* pParams, const bool isStaticObje
 	m_currentRow = 1;
 }
 
+SDLGameObject::SDLGameObject(const bool isStaticObject) // TODO: Refactor game to add more game object variants
+	: GameObject(nullptr), m_position(0, 0), m_velocity(0, 0), m_pCollider(nullptr), m_bIsStaticObject(isStaticObject)
+{
+	m_width = 0;
+	m_height = 0;
+	m_textureID = "";
+	m_currentRow = 1;
+}
+
 SDLGameObject::~SDLGameObject()
 {
 	if(m_pCollider)
 		delete m_pCollider;
+
+	m_pCollider = nullptr;
 }
 
 void SDLGameObject::update()
@@ -32,10 +43,14 @@ void SDLGameObject::update()
 	if (getIsStatic())
 		return;
 
-	//checkCollisions();
-
+	// Handle movement, adjusted for delta time
 	m_velocity += m_acceleration;
-	m_position += m_velocity;
+	m_position += m_velocity * game::Instance()->getDeltaTime();
+	m_acceleration = Vec2(0,0);
+	
+	// Handle friction
+	m_velocity.x -= m_friction * m_velocity.x * game::Instance()->getDeltaTime();
+	m_velocity.y -= m_friction * m_velocity.y * game::Instance()->getDeltaTime();
 }
 
 void SDLGameObject::checkCollisions()
