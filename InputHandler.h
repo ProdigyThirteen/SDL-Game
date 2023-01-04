@@ -23,7 +23,7 @@ private:
 	
 
 public:
-	static void init();
+	static bool init();
 	static void update();
 	static void cleanup();
 

@@ -2,11 +2,19 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
+#include <iostream>
 
 class UI
 {
+private:
+	static TTF_Font* m_pFont;
+	static SDL_Renderer* m_pRenderer;
 	
 public:
-	static void createButton(int x, int y, int w, int h, SDL_Renderer* renderer, SDL_Texture* texture);
+	static bool init(SDL_Renderer* renderer);
+	static void cleanup();
+	static bool loadFont(std::string path, int size);
+	static void drawText(std::string text, int x, int y, SDL_Color color);
 };
 

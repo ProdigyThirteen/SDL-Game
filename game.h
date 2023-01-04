@@ -16,6 +16,7 @@ private:
 	game() {};
 	
 	void loadTextures();
+	void loadSounds();
 	//void createObjects();
 
 	static game* s_pInstance;

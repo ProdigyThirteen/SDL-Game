@@ -1,9 +1,14 @@
 #include "SDL.h" // SDL_Init, SDL_CreateWindow, SDL_CreateRenderer, SDL_SetRenderDrawColor, SDL_RenderClear, SDL_RenderPresent, SDL_DestroyRenderer, SDL_DestroyWindow, SDL_Quit
+#include "SDL_image.h" // IMG_Init, IMG_Quit
+#include "SDL_ttf.h" // TTF_Init, TTF_Quit
+#include "SDL_mixer.h" // Mix_Init, Mix_Quit
 #include "Game.h"
 #include "Config.h" // SCREEN_WIDTH, SCREEN_HEIGHT
 #include "Renderer.h" // loadTexture
 #include "InputHandler.h" // Input events
 #include "MapLoader.h" // loadMap
+#include "UI.h"
+#include "Sounds.h"
 #include <iostream>
 
 game* game::s_pInstance = nullptr;
@@ -37,8 +42,31 @@ bool game::init()
 		return false;
 	}
 
-	inputHandler::init();	
-	
+	if (TTF_Init() != 0)
+	{
+		printf("TTF_Init Error: %s", TTF_GetError());
+		return false;
+	}
+
+	if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3)
+	{
+		printf("Mix_Init Error: %s", Mix_GetError());
+		return false;
+	}
+
+	if (!inputHandler::init())
+	{
+		printf("Error initializing input handler\n");
+		return false;
+	}
+
+	if (!Sounds::init())
+	{
+		printf("Error initializing sounds\n");
+		return false;
+	}
+
+	loadSounds();
 	loadTextures();
 
 	//if (!MapLoader::loadMap("levels/test.png"))
@@ -47,8 +75,18 @@ bool game::init()
 		printf("Error loading map\n");
 		return false;
 	}
-	 
-	printf("Total objects: %I64d\n", m_newObjects.size());
+
+	if (!UI::init(m_pRenderer))
+	{
+		printf("Error initializing UI\n");
+		return false;
+	}
+
+	if (!UI::loadFont("assets/fonts/NotoMono-Regular.ttf", 32))
+	{
+		printf("Error loading font\n");
+		return false;
+	}
 	
 	m_isRunning = true;
 	return true;
@@ -63,6 +101,11 @@ void game::loadTextures()
 	Renderer::loadTexture("assets/BulletProjectile.png", "bullet", m_pRenderer, 1);
 }
 
+void game::loadSounds()
+{
+	Sounds::loadSound("assets/sounds/gunshot.mp3", "gunshot");
+}
+
 void game::addObject(std::shared_ptr<SDLGameObject> obj)
 {
 	m_newObjects.push_back(obj);
@@ -71,22 +114,6 @@ void game::addObject(std::shared_ptr<SDLGameObject> obj)
 void game::removeObject(std::shared_ptr<SDLGameObject> obj)
 {
 	m_deadObjects.push_back(obj);
-}
-
-void game::cleanup()
-{
-	printf("Running cleanup...\n");
-	m_isRunning = false;
-	inputHandler::cleanup();
-	
-	// Clear all vectors
-	m_gameObjects.clear();
-	m_newObjects.clear();
-	m_deadObjects.clear();
-	
-	SDL_DestroyRenderer(m_pRenderer);
-	SDL_DestroyWindow(m_pWindow);
-	SDL_Quit();
 }
 
 void game::handleEvents()
@@ -176,4 +203,24 @@ void game::tick()
 	m_lastTime = m_currentTime;
 	m_currentTime = SDL_GetTicks();
 	m_deltaTime = (m_currentTime - m_lastTime) / 1000.0f;
+}
+
+void game::cleanup()
+{
+	printf("Running cleanup...\n");
+	m_isRunning = false;
+	inputHandler::cleanup();
+	UI::cleanup();
+
+	// Clear all vectors
+	m_gameObjects.clear();
+	m_newObjects.clear();
+	m_deadObjects.clear();
+
+	SDL_DestroyRenderer(m_pRenderer);
+	SDL_DestroyWindow(m_pWindow);
+	TTF_Quit();
+	IMG_Quit();
+	Mix_Quit();
+	SDL_Quit();
 }

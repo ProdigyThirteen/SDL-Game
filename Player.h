@@ -24,6 +24,8 @@ private:
 	const int m_fireRate = 8; // How many frames between each bullet
 	int m_fireRateCounter = 0;
 	const int m_bulletSpeed = 600; 
+	const int m_maxAmmo = 99;
+	int m_ammo = 10;
 	
 public:
 	Player(const AssetLoader* pParams);

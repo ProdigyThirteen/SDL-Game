@@ -7,7 +7,7 @@ Vec2* inputHandler::m_mousePosition;
 const Uint8* inputHandler::m_currentKeystates;
 Uint8* inputHandler::m_lastKeystates;
 
-void inputHandler::init()
+bool inputHandler::init()
 {
 	printf("Input Handler Initialising...\n");
 	for (int i = 0; i < MOUSEBUTTON_NUM_ITEMS; i++)
@@ -16,6 +16,8 @@ void inputHandler::init()
 	m_mousePosition = new Vec2(0, 0);
 	m_currentKeystates = SDL_GetKeyboardState(0);
 	m_lastKeystates = new Uint8[SDL_NUM_SCANCODES];
+
+	return true;
 }
 
 void inputHandler::cleanup()

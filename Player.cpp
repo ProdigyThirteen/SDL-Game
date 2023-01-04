@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "InputHandler.h"
 #include "Renderer.h"
+#include "UI.h"
+#include "Sounds.h"
 #include "Game.h"
 #include "CircleCollider.h"
 #include "Bullet.h"
@@ -14,8 +16,8 @@ Player::Player(const AssetLoader* pParams)
 {
 	m_lastSafeLocation = m_position;
 	m_friction = 10;
-	m_maxSpeed = 80;
-	m_speed = 80;
+	m_maxSpeed = 60;
+	m_speed = 50;
 }
 
 void Player::setRotation()
@@ -53,6 +55,9 @@ void Player::draw()
 		Renderer::drawFrameRot(m_textureID, (int)m_position.x , (int)m_position.y, m_width, m_height, m_rotation, m_currentRow, game::Instance()->getRenderer());
 		break;
 	}
+
+	// Draw ammo
+	UI::drawText(std::to_string(m_ammo), 10, 10, { 255, 255, 255 });
 }
 
 void Player::update()
@@ -90,12 +95,12 @@ void Player::update()
 	}
 
 	// Handle shooting
-	if (inputHandler::getMouseButtonState(LEFT))
+	if (inputHandler::getMouseButtonState(LEFT) && m_ammo > 0)
 	{
 		m_playerState = SHOOTING;
 
 		// Check if the player can shoot
-		if (m_fireRateCounter >= m_fireRate)
+		if (m_fireRateCounter >= m_fireRate && m_ammo > 0)
 		{
 			m_fireRateCounter = 0;
 			
@@ -123,6 +128,19 @@ void Player::update()
 
 			// Add the bullet to the game object vector
 			game::Instance()->addObject(temp);
+
+			// Play the shooting sound
+			Sounds::playSound("gunshot");
+
+			// Subtract ammo
+			m_ammo--;
+		}
+
+		// Reset the animation if out of ammo
+		if (m_ammo <= 0)
+		{
+			m_playerState = IDLE;
+			m_currentRow = 0;
 		}
 		
 	}
