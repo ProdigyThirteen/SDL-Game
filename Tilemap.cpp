@@ -2,7 +2,6 @@
 #include "Config.h"
 #include "Renderer.h"
 #include "game.h"
-#include "Floor.h"
 
 Tilemap::Tilemap(int tilemapX, int tilemapY)
 	: SDLGameObject(true), m_tilemapX(tilemapX), m_tilemapY(tilemapY)
@@ -36,7 +35,7 @@ void Tilemap::draw()
 		for (int x = screenX; x < screenX + screenW; x++)
 		{
 			// Check if drawing tile is within bounds of m_tilemap
-			if (x < 0 || x > m_tilemapX || y < 0 || y > m_tilemapY)
+			if (x < 0 || x >= m_tilemapX || y < 0 || y >= m_tilemapY)
 				continue;
 
 			// If the tile is a floor, draw it

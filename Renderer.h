@@ -21,7 +21,7 @@ private:
 	static SDL_Renderer* m_pRenderer;
 	
 public:
-	static bool loadTexture(std::string fileName, std::string id, int frames);
+	static bool loadTexture(std::string fileName, std::string id, int framesOfAnimation = 1);
 	
 	static void draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	

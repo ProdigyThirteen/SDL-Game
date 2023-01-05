@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "Game.h"
+#include <random>
+#include <time.h>
 
 const int FPS = 60;
 const float DELAY_TIME = 1000.0f / FPS;
@@ -7,6 +9,9 @@ const float DELAY_TIME = 1000.0f / FPS;
 int main(int, char**)
 {	
 	Uint32 frameStart, frameTime;
+
+	// Seed random
+	srand(time(NULL));
 
 	printf("Attempting init...\n");
 	if (game::Instance()->init())

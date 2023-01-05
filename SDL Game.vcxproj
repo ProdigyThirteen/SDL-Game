@@ -136,7 +136,7 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="Wall.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -148,7 +148,7 @@
     <ClCompile Include="Sounds.cpp" />
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="UI.cpp" />
-    <ClCompile Include="Wall.cpp" />
+    <ClCompile Include="Crate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetLoader.h" />
@@ -157,7 +157,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Config.h" />
-    <ClInclude Include="Floor.h" />
+    <ClInclude Include="Wall.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputHandler.h" />
@@ -171,7 +171,7 @@
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />
-    <ClInclude Include="Wall.h" />
+    <ClInclude Include="Crate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

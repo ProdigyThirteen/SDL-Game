@@ -41,8 +41,14 @@ void Bullet::cleanup()
 
 void Bullet::onCollision(std::shared_ptr<SDLGameObject> pOther)
 {
-	if (pOther->getCollider().GetTag() == "wall")
+	if (pOther->getCollider().GetTag() == "Wall")
 	{
+		game::Instance()->removeObject(shared_from_this());
+	}
+
+	if (pOther->getCollider().GetTag() == "Enemy")
+	{
+		pOther->onCollision(shared_from_this());
 		game::Instance()->removeObject(shared_from_this());
 	}
 }

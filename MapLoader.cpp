@@ -8,6 +8,7 @@
 
 // Objects to be created
 #include "Player.h"
+#include "Crate.h"
 #include "Wall.h"
 #include "Tilemap.h"
 
@@ -52,6 +53,8 @@ bool MapLoader::loadMap(const char* path)
 		printf("IMG_Load Error: %s", IMG_GetError());
 		return false;
 	}
+	
+	printf("Loading level: %s\n", path);
 
 	// Player position
 	int playerX = 0;
@@ -60,6 +63,8 @@ bool MapLoader::loadMap(const char* path)
 	// Tilemap size
 	int tilemapWidth = surface->w;
 	int tilemapHeight = surface->h;
+
+	printf("Tilemap size: %d x %d\n", tilemapWidth, tilemapHeight);
 
 	// Create tilemap
 	std::shared_ptr<Tilemap> tilemap = std::make_shared<Tilemap>(tilemapWidth, tilemapHeight);
@@ -89,6 +94,12 @@ bool MapLoader::loadMap(const char* path)
 				playerY = y * TILE_SIZE;
 				tilemap.get()->setTile(x, y, FLOOR);
 			}
+			else if (r == 248 && g == 178 && b == 90)
+			{
+				// Crate
+				game::Instance()->addObject(std::make_shared<Crate>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, "crate")));
+				tilemap.get()->setTile(x, y, CRATE);
+			}
 			else
 			{
 				printf("Unknown color: %d, %d, %d at X: %i Y: %i\n", r, g, b, x, y);
@@ -104,5 +115,6 @@ bool MapLoader::loadMap(const char* path)
 	game::Instance()->addObject(std::make_shared<Player>(new AssetLoader(playerX, playerY, 48, 48, "playerIdle")));
 
 	SDL_FreeSurface(surface);
+	printf("Level loaded successfully\n");
 	return true;
 }

@@ -12,7 +12,7 @@ bool Renderer::loadTexture(std::string fileName, std::string id, int framesOfAni
 	if (!pTempSurface)
 	{
 		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
-		printf("IMG_Load Error: %s", IMG_GetError());
+		printf("IMG_Load Error: %s\n", IMG_GetError());
 		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}

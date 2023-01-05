@@ -11,6 +11,7 @@
 #include "Sounds.h"
 #include "Utils.h"
 #include <iostream>
+#include <random>
 
 game* game::s_pInstance = nullptr;
 
@@ -93,15 +94,37 @@ bool game::init()
 	// Game setup
 	loadAssets();
 
-	//if (!MapLoader::loadMap("levels/test.png"))
-	if (!MapLoader::loadMap("levels/benchmark.png"))
+	// Load a random level
+	int choice = rand() % 2;
+
+	switch (choice)
 	{
+	case 0:
+		if (!MapLoader::loadMap("levels/1.png"))
+		{
+			Utils::SetConsoleColour(Utils::ConsoleColour::RED);
+			printf("Error loading map\n");
+			Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
+			return false;
+		}
+		break;
+
+	case 1:
+		if (!MapLoader::loadMap("levels/2.png"))
+		{
+			Utils::SetConsoleColour(Utils::ConsoleColour::RED);
+			printf("Error loading map\n");
+			Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
+			return false;
+		}
+		break;
+
+	default:
 		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("Error loading map\n");
 		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
-
 	
 	m_isRunning = true;
 	return true;
@@ -110,11 +133,12 @@ bool game::init()
 void game::loadAssets()
 {
 	// Textures
-	Renderer::loadTexture("assets/player/rifle.png", "playerIdle", 1);
+	Renderer::loadTexture("assets/player/rifle.png", "playerIdle");
 	Renderer::loadTexture("assets/player/rifle_shooting.png", "playerShooting", 2);
-	Renderer::loadTexture("assets/world/Wall.png", "wall", 1);
-	Renderer::loadTexture("assets/world/Floor.png", "floor", 1);
-	Renderer::loadTexture("assets/BulletProjectile.png", "bullet", 1);
+	Renderer::loadTexture("assets/world/Wall.png", "wall");
+	Renderer::loadTexture("assets/world/Floor.png", "floor");
+	Renderer::loadTexture("assets/BulletProjectile.png", "bullet");
+	Renderer::loadTexture("assets/world/crate.png", "crate");
 
 	// Sounds
 	Sounds::loadSound("assets/sounds/gunshot.mp3", "gunshot");

@@ -5,7 +5,8 @@ enum TileType
 {
 	EMPTY = 0,
 	WALL = 1,
-	FLOOR = 2
+	FLOOR = 2,
+	CRATE = 3
 };
 
 class Tilemap : public SDLGameObject
