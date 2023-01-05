@@ -9,102 +9,121 @@
 #include "MapLoader.h" // loadMap
 #include "UI.h"
 #include "Sounds.h"
+#include "Utils.h"
 #include <iostream>
 
 game* game::s_pInstance = nullptr;
 
 bool game::init()
 {
+	// SDL Init
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("SDL_Init Error: %s", SDL_GetError());
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 	
 	if (!(m_pWindow = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)))
 	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("SDL_CreateWindow Error: %s", SDL_GetError());
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 
-	if(!(m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_ACCELERATED)))
+	// Renderer init
+	if (!Renderer::init(m_pWindow))
 	{
-		printf("SDL_CreateRenderer Error: %s", SDL_GetError());
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
+		printf("Error initializing renderer\n");
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
-
+	
+	// IMG Init
 	int flags = IMG_INIT_PNG;
 	int initted = IMG_Init(flags);
 	
 	if (initted != flags)
 	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("IMG_Init Error: %s", IMG_GetError());
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 
+	// Text init
 	if (TTF_Init() != 0)
 	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("TTF_Init Error: %s", TTF_GetError());
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 
-	if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3)
+	// UI Init
+	if (!UI::init())
 	{
-		printf("Mix_Init Error: %s", Mix_GetError());
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
+		printf("Error initializing UI\n");
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 
-	if (!inputHandler::init())
-	{
-		printf("Error initializing input handler\n");
-		return false;
-	}
-
+	// Sound init
 	if (!Sounds::init())
 	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("Error initializing sounds\n");
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 
-	loadSounds();
-	loadTextures();
+	// Input init
+	if (!inputHandler::init())
+	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
+		printf("Error initializing input handler\n");
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
+		return false;
+	}
+
+	// Game setup
+	loadAssets();
 
 	//if (!MapLoader::loadMap("levels/test.png"))
 	if (!MapLoader::loadMap("levels/benchmark.png"))
 	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("Error loading map\n");
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 
-	if (!UI::init(m_pRenderer))
-	{
-		printf("Error initializing UI\n");
-		return false;
-	}
-
-	if (!UI::loadFont("assets/fonts/NotoMono-Regular.ttf", 32))
-	{
-		printf("Error loading font\n");
-		return false;
-	}
 	
 	m_isRunning = true;
 	return true;
 }
 
-void game::loadTextures()
+void game::loadAssets()
 {
-	Renderer::loadTexture("assets/player/rifle.png", "playerIdle", m_pRenderer, 1);
-	Renderer::loadTexture("assets/player/rifle_shooting.png", "playerShooting", m_pRenderer, 2);
-	Renderer::loadTexture("assets/world/Wall.png", "wall", m_pRenderer, 1);
-	Renderer::loadTexture("assets/world/Floor.png", "floor", m_pRenderer, 1);
-	Renderer::loadTexture("assets/BulletProjectile.png", "bullet", m_pRenderer, 1);
+	// Textures
+	Renderer::loadTexture("assets/player/rifle.png", "playerIdle", 1);
+	Renderer::loadTexture("assets/player/rifle_shooting.png", "playerShooting", 2);
+	Renderer::loadTexture("assets/world/Wall.png", "wall", 1);
+	Renderer::loadTexture("assets/world/Floor.png", "floor", 1);
+	Renderer::loadTexture("assets/BulletProjectile.png", "bullet", 1);
+
+	// Sounds
+	Sounds::loadSound("assets/sounds/gunshot.mp3", "gunshot");
+
+	// Fonts
+	UI::loadFont("assets/fonts/NotoMono-Regular.ttf", 32);
 }
 
-void game::loadSounds()
-{
-	Sounds::loadSound("assets/sounds/gunshot.mp3", "gunshot");
-}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~OBJECT MANAGEMENT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 void game::addObject(std::shared_ptr<SDLGameObject> obj)
 {
@@ -115,6 +134,8 @@ void game::removeObject(std::shared_ptr<SDLGameObject> obj)
 {
 	m_deadObjects.push_back(obj);
 }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~CORE FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 void game::handleEvents()
 {
@@ -153,31 +174,30 @@ void game::update()
 	tick();
 	
 	// Update objects
-	for (auto& go : m_gameObjects)
+	for (auto& obj : m_gameObjects)
 	{
-		go->update();
-		go->checkCollisions();
+		obj->update();
+		obj->checkCollisions();
 	}
 
-	// Remove objects
-	for (auto& go : m_deadObjects)
+	// Remove dead objects
+	for (auto& obj : m_deadObjects)
 	{
-		m_gameObjects.erase(std::remove(m_gameObjects.begin(), m_gameObjects.end(), go), m_gameObjects.end());
+		m_gameObjects.erase(std::remove(m_gameObjects.begin(), m_gameObjects.end(), obj), m_gameObjects.end());
 	}
 
 	m_deadObjects.clear();
 
-	// Add objects
-	for (auto& go : m_newObjects)
+	// Add new objects
+	for (auto& obj : m_newObjects)
 	{
-		m_gameObjects.push_back(go);
+		m_gameObjects.push_back(obj);
 	}
 
 	m_newObjects.clear();
 	
 
 	inputHandler::update();
-
 	if (inputHandler::isKeyDown(SDL_SCANCODE_ESCAPE))
 		m_isRunning = false;
 	
@@ -185,16 +205,15 @@ void game::update()
 
 void game::render()
 {
-	SDL_RenderClear(m_pRenderer);
-
-	SDL_SetRenderDrawColor(m_pRenderer, 0, 180, 180, 255);
+	Renderer::clear();
+	Renderer::setDrawColor(0, 180, 180, 255);
 
 	for (auto& obj : m_gameObjects)
 	{
 		obj->draw();
 	}
-
-	SDL_RenderPresent(m_pRenderer);
+	
+	Renderer::present();
 }
 
 void game::tick()
@@ -209,15 +228,19 @@ void game::cleanup()
 {
 	printf("Running cleanup...\n");
 	m_isRunning = false;
+
+	// Clean up static classes
+	Renderer::cleanup();
 	inputHandler::cleanup();
 	UI::cleanup();
+	Sounds::cleanup();
 
 	// Clear all vectors
 	m_gameObjects.clear();
 	m_newObjects.clear();
 	m_deadObjects.clear();
 
-	SDL_DestroyRenderer(m_pRenderer);
+	// Clean up SDL modules
 	SDL_DestroyWindow(m_pWindow);
 	TTF_Quit();
 	IMG_Quit();

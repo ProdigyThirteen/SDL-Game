@@ -48,16 +48,16 @@ void Player::draw()
 	switch (m_playerState)
 	{
 	case IDLE:
-		Renderer::drawRot(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, m_rotation, game::Instance()->getRenderer());
+		Renderer::drawRot(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, m_rotation);
 		break;
 
 	case SHOOTING:
-		Renderer::drawFrameRot(m_textureID, (int)m_position.x , (int)m_position.y, m_width, m_height, m_rotation, m_currentRow, game::Instance()->getRenderer());
+		Renderer::drawFrameRot(m_textureID, (int)m_position.x , (int)m_position.y, m_width, m_height, m_rotation, m_currentRow);
 		break;
 	}
 
 	// Draw ammo
-	UI::drawText(std::to_string(m_ammo), 10, 10, { 255, 255, 255 });
+	UI::drawText(std::to_string(m_ammo), 10, 10, { 255, 255, 255, 255 });
 }
 
 void Player::update()

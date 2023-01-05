@@ -15,15 +15,16 @@ class game
 private:
 	game() {};
 	
-	void loadTextures();
-	void loadSounds();
+	//void loadTextures();
+	//void loadSounds();
+	void loadAssets();
 	//void createObjects();
 
 	static game* s_pInstance;
 	
 	// Game window and view
 	SDL_Window* m_pWindow = nullptr;
-	SDL_Renderer* m_pRenderer = nullptr;
+	//SDL_Renderer* m_pRenderer = nullptr;
 	Vec2 m_CameraPos = Vec2(0, 0);
 
 	bool m_isRunning = false;
@@ -61,7 +62,7 @@ public:
 
 	// Getters
 	bool isRunning() { return m_isRunning; }
-	SDL_Renderer* getRenderer() { return m_pRenderer; }
+	//SDL_Renderer* getRenderer() { return m_pRenderer; }
 	Vec2 getCameraPos() { return m_CameraPos; }
 	void setCameraPos(Vec2 pos) { m_CameraPos = pos; }
 	float getDeltaTime() { return m_deltaTime; }

@@ -2,6 +2,7 @@
 #include "Collision.h"
 #include "CircleCollider.h"
 #include "game.h"
+#include "Renderer.h"
 
 RectCollider::RectCollider(Vec2& position, const int colliderWidth, const int colliderHeight, const int offsetX, const int offsetY, const bool isTrigger, const std::string tag)
 	: Collider(isTrigger, ColliderType::Rect, tag), m_position(&position), m_width(colliderWidth), m_height(colliderHeight), m_offsetX(offsetX), m_offsetY(offsetY)
@@ -40,7 +41,7 @@ void RectCollider::Update()
 void RectCollider::Debug() const
 {
 	// Draw the rect
-	SDL_SetRenderDrawColor(game::Instance()->getRenderer(), 255, 0, 0, 255);
-	SDL_RenderDrawRect(game::Instance()->getRenderer(), &m_rect);
-	SDL_SetRenderDrawColor(game::Instance()->getRenderer(), 0, 180, 180, 255);
+	SDL_SetRenderDrawColor(Renderer::getRenderer(), 255, 0, 0, 255);
+	SDL_RenderDrawRect(Renderer::getRenderer(), &m_rect);
+	SDL_SetRenderDrawColor(Renderer::getRenderer(), 0, 180, 180, 255);
 }

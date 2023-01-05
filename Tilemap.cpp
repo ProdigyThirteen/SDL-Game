@@ -47,7 +47,7 @@ void Tilemap::draw()
 				destRect.y = y * TILE_SIZE - game::Instance()->getCameraPos().y;
 				destRect.w = TILE_SIZE;
 				destRect.h = TILE_SIZE;
-				SDL_RenderCopy(game::Instance()->getRenderer(), Renderer::getTexture("floor"), NULL, &destRect);
+				SDL_RenderCopy(Renderer::getRenderer(), Renderer::getTexture("floor"), NULL, &destRect);
 			}
 		}
 	}

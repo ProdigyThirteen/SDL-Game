@@ -1,6 +1,7 @@
 #include "CircleCollider.h"
 #include "Collision.h"
 #include "RectCollider.h"
+#include "Renderer.h"
 #include "game.h"
 #include "Utils.h"
 
@@ -39,7 +40,7 @@ void CircleCollider::Update()
 
 void CircleCollider::Debug() const
 {
-	SDL_SetRenderDrawColor(game::Instance()->getRenderer(), 255, 0, 0, 255);
-	DrawCircle(game::Instance()->getRenderer(), (int)m_position->x + offset.x - game::Instance()->getCameraPos().x, (int)m_position->y + offset.y - game::Instance()->getCameraPos().y, m_radius);
-	SDL_SetRenderDrawColor(game::Instance()->getRenderer(), 0, 180, 180, 255);
+	SDL_SetRenderDrawColor(Renderer::getRenderer(), 255, 0, 0, 255);
+	Utils::DrawCircle(Renderer::getRenderer(), (int)m_position->x + offset.x - game::Instance()->getCameraPos().x, (int)m_position->y + offset.y - game::Instance()->getCameraPos().y, m_radius);
+	SDL_SetRenderDrawColor(Renderer::getRenderer(), 0, 180, 180, 255);
 }

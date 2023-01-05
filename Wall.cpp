@@ -12,7 +12,7 @@ Wall::Wall(const AssetLoader* pParams)
 void Wall::draw()
 {
 	//m_pCollider->Debug();
-	Renderer::draw(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height, game::Instance()->getRenderer());
+	Renderer::draw(m_textureID, (int)m_position.x, (int)m_position.y, m_width, m_height);
 }
 
 void Wall::update()

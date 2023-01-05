@@ -5,9 +5,15 @@ std::map<std::string, Mix_Chunk*> Sounds::m_sounds;
 
 bool Sounds::init()
 {
+	if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3)
+	{
+		printf("Mix_Init Error: %s", Mix_GetError());
+		return false;
+	}
+	
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	{
-		printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+		printf("Failed to open audio channel. SDL_mixer Error: %s\n", Mix_GetError());
 		return false;
 	}
 

@@ -1,12 +1,13 @@
 #include "UI.h"
 #include "SDL_ttf.h"
+#include "Renderer.h" // getRenderer
 
 TTF_Font* UI::m_pFont = nullptr;
 SDL_Renderer* UI::m_pRenderer = nullptr;
 
-bool UI::init(SDL_Renderer* renderer)
+bool UI::init()
 {
-	m_pRenderer = renderer;
+	m_pRenderer = Renderer::getRenderer();
 	return true;
 }
 

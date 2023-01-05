@@ -1,24 +1,25 @@
 #include "Renderer.h"
 #include "SDL_Image.h"
 #include "game.h"
-
-//textureManager* textureManager::s_pInstance = 0;
+#include "Utils.h"
 
 std::map<std::string, textureData*> Renderer::m_textureMap;
-int drawCount = 0;
+SDL_Renderer* Renderer::m_pRenderer;
 
-bool Renderer::loadTexture(std::string fileName, std::string id, SDL_Renderer* pRenderer, int framesOfAnimation)
+bool Renderer::loadTexture(std::string fileName, std::string id, int framesOfAnimation)
 {
 	SDL_Surface* pTempSurface = IMG_Load(fileName.c_str());
 	if (!pTempSurface)
 	{
+		Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 		printf("IMG_Load Error: %s", IMG_GetError());
+		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
 
 	printf("%s loaded!\n", fileName.c_str());
 
-	if (SDL_Texture* pTexture = SDL_CreateTextureFromSurface(pRenderer, pTempSurface))
+	if (SDL_Texture* pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface))
 	{
 		m_textureMap[id] = new textureData{ pTexture, framesOfAnimation };
 		SDL_FreeSurface(pTempSurface);
@@ -29,7 +30,7 @@ bool Renderer::loadTexture(std::string fileName, std::string id, SDL_Renderer* p
 	return false;
 }
 
-void Renderer::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* pRenderer, SDL_RendererFlip flip)
+void Renderer::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip)
 {
 	// Skip drawing if outside screen bounds, offset by camera position
 	if (x + width < game::Instance()->getCameraPos().x || 
@@ -39,8 +40,6 @@ void Renderer::draw(std::string id, int x, int y, int width, int height, SDL_Ren
 		return;	
 
 	Vec2 CameraPos = game::Instance()->getCameraPos();
-
-	drawCount++;
 
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
@@ -52,10 +51,10 @@ void Renderer::draw(std::string id, int x, int y, int width, int height, SDL_Ren
 	destRect.x = x - CameraPos.x;
 	destRect.y = y - CameraPos.y;
 
-	SDL_RenderCopyEx(pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, 0, 0, flip);
+	SDL_RenderCopyEx(m_pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, 0, 0, flip);
 }
 
-void Renderer::drawRot(std::string id, int x, int y, int width, int height, float rotation, SDL_Renderer* pRenderer, SDL_RendererFlip flip)
+void Renderer::drawRot(std::string id, int x, int y, int width, int height, float rotation, SDL_RendererFlip flip)
 {
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
@@ -67,10 +66,10 @@ void Renderer::drawRot(std::string id, int x, int y, int width, int height, floa
 	destRect.x = x - game::Instance()->getCameraPos().x;
 	destRect.y = y - game::Instance()->getCameraPos().y;
 
-	SDL_RenderCopyEx(pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, rotation, 0, flip);
+	SDL_RenderCopyEx(m_pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, rotation, 0, flip);
 }
 
-void Renderer::drawFrame(std::string id, int x, int y, int width, int height, int currentCol, SDL_Renderer* pRenderer, SDL_RendererFlip flip)
+void Renderer::drawFrame(std::string id, int x, int y, int width, int height, int currentCol, SDL_RendererFlip flip)
 {
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
@@ -84,10 +83,10 @@ void Renderer::drawFrame(std::string id, int x, int y, int width, int height, in
 	destRect.x = x - game::Instance()->getCameraPos().x;
 	destRect.y = y - game::Instance()->getCameraPos().y;
 
-	SDL_RenderCopyEx(pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, 0, 0, flip);
+	SDL_RenderCopyEx(m_pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, 0, 0, flip);
 }
 
-void Renderer::drawFrameRot(std::string id, int x, int y, int width, int height, float rotation, int currentCol, SDL_Renderer* pRenderer, SDL_RendererFlip flip)
+void Renderer::drawFrameRot(std::string id, int x, int y, int width, int height, float rotation, int currentCol,  SDL_RendererFlip flip)
 {
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
@@ -101,22 +100,53 @@ void Renderer::drawFrameRot(std::string id, int x, int y, int width, int height,
 	destRect.x = x - game::Instance()->getCameraPos().x;
 	destRect.y = y - game::Instance()->getCameraPos().y;
 
-	SDL_RenderCopyEx(pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, rotation, 0, flip);
-}
-
-void drawTilemap(SDL_Renderer* pRenderer)
-{
-	
-}
-
-int Renderer::getDrawCount()
-{
-	int temp = drawCount;
-	drawCount = 0;
-	return temp;
+	SDL_RenderCopyEx(m_pRenderer, m_textureMap[id]->texture, &srcRect, &destRect, rotation, 0, flip);
 }
 
 SDL_Texture* Renderer::getTexture(std::string id)
 {
 	return m_textureMap.at(id)->texture;
+}
+
+bool Renderer::init(SDL_Window* pWindow)
+{
+	m_pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (!m_pRenderer)
+	{
+		printf("SDL_CreateRenderer Error: %s", SDL_GetError());
+		return false;
+	}
+
+	return true;
+}
+
+void Renderer::cleanup()
+{
+	for (auto it = m_textureMap.begin(); it != m_textureMap.end(); it++)
+	{
+		SDL_DestroyTexture(it->second->texture);
+		delete it->second;
+	}
+
+	SDL_DestroyRenderer(m_pRenderer);
+}
+
+SDL_Renderer* Renderer::getRenderer()
+{
+	return m_pRenderer;
+}
+
+void Renderer::clear()
+{
+	SDL_RenderClear(m_pRenderer);
+}
+
+void Renderer::present()
+{
+	SDL_RenderPresent(m_pRenderer);
+}
+
+void Renderer::setDrawColor(int r, int g, int b, int a)
+{
+	SDL_SetRenderDrawColor(m_pRenderer, r, g, b, a);
 }
