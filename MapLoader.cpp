@@ -11,6 +11,7 @@
 #include "Crate.h"
 #include "Wall.h"
 #include "Tilemap.h"
+#include "AmmoDrop.h"
 
 // I totally didn't find this on stackoverflow, I swear
 Uint32 MapLoader::getPixel(SDL_Surface* surface, int x, int y)
@@ -69,6 +70,9 @@ bool MapLoader::loadMap(const char* path)
 	// Create tilemap
 	std::shared_ptr<Tilemap> tilemap = std::make_shared<Tilemap>(tilemapWidth, tilemapHeight);
 
+	// Add the tilemap to the game first to ensure it is drawn first
+	game::Instance()->addObject(tilemap);
+
 	for (int y = 0; y < tilemapHeight; y++)
 	{
 		for (int x = 0; x < tilemapWidth; x++)
@@ -100,6 +104,16 @@ bool MapLoader::loadMap(const char* path)
 				game::Instance()->addObject(std::make_shared<Crate>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, "crate")));
 				tilemap.get()->setTile(x, y, CRATE);
 			}
+			else if (r == 0 && g == 255 && b == 0)
+			{
+				// Ammo drop
+				game::Instance()->addObject(std::make_shared<AmmoDrop>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, 32, 16, "gun")));
+				tilemap.get()->setTile(x, y, FLOOR);
+			}
+			else if (r == 0 && g == 0 && b == 255)
+			{
+				//Exit
+			}
 			else
 			{
 				printf("Unknown color: %d, %d, %d at X: %i Y: %i\n", r, g, b, x, y);
@@ -107,9 +121,6 @@ bool MapLoader::loadMap(const char* path)
 			}
 		}
 	}
-	
-	// Add the tilemap to the game
-	game::Instance()->addObject(tilemap);
 
 	// Create the player to ensure it's on top of everything
 	game::Instance()->addObject(std::make_shared<Player>(new AssetLoader(playerX, playerY, 48, 48, "playerIdle")));
@@ -118,3 +129,14 @@ bool MapLoader::loadMap(const char* path)
 	printf("Level loaded successfully\n");
 	return true;
 }
+
+
+/*
+ COLOUR KEY:
+	WALL = 255, 255, 255
+	FLOOR = 0, 0, 0
+	PLAYER = 255, 0, 0
+	CRATE = 248, 178, 90
+	AMMO = 0, 255, 0
+	EXIT = 0, 0, 255
+*/

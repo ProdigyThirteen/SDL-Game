@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AmmoDrop.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="Crate.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AmmoDrop.h" />
     <ClInclude Include="AssetLoader.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CircleCollider.h" />

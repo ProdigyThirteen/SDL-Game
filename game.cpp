@@ -100,7 +100,7 @@ bool game::init()
 	switch (choice)
 	{
 	case 0:
-		if (!MapLoader::loadMap("levels/1.png"))
+		if (!MapLoader::loadMap("levels/2.png"))
 		{
 			Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 			printf("Error loading map\n");
@@ -137,8 +137,10 @@ void game::loadAssets()
 	Renderer::loadTexture("assets/player/rifle_shooting.png", "playerShooting", 2);
 	Renderer::loadTexture("assets/world/Wall.png", "wall");
 	Renderer::loadTexture("assets/world/Floor.png", "floor");
-	Renderer::loadTexture("assets/BulletProjectile.png", "bullet");
 	Renderer::loadTexture("assets/world/crate.png", "crate");
+	Renderer::loadTexture("assets/BulletProjectile.png", "bullet");
+	Renderer::loadTexture("assets/Machinegun.png", "gun");
+	Renderer::loadTexture("assets/ui/Bullet.png", "ui_bullet");
 
 	// Sounds
 	Sounds::loadSound("assets/sounds/gunshot.mp3", "gunshot");

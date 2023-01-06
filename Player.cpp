@@ -75,23 +75,15 @@ void Player::update()
 	{		
 		if (inputHandler::isKeyDown(SDL_SCANCODE_RIGHT) || inputHandler::isKeyDown(SDL_SCANCODE_D))
 			m_acceleration.x += m_speed;
-		/*else if (m_velocity.x > 0)
-			m_velocity.x = 0;*/
 	
 		if (inputHandler::isKeyDown(SDL_SCANCODE_LEFT) || inputHandler::isKeyDown(SDL_SCANCODE_A))
 			m_acceleration.x += -m_speed;
-		//else if (m_velocity.x < 0)
-		//	m_velocity.x = 0;
 
 		if (inputHandler::isKeyDown(SDL_SCANCODE_UP) || inputHandler::isKeyDown(SDL_SCANCODE_W))
 			m_acceleration.y += -m_speed;
-		//else if (m_velocity.y < 0)
-		//	m_velocity.y = 0;
 
 		if (inputHandler::isKeyDown(SDL_SCANCODE_DOWN) || inputHandler::isKeyDown(SDL_SCANCODE_S))
 			m_acceleration.y += m_speed;
-		//else if (m_velocity.y > 0)
-		//	m_velocity.y = 0;
 	}
 
 	// Handle shooting
@@ -140,7 +132,6 @@ void Player::update()
 		if (m_ammo <= 0)
 		{
 			m_playerState = IDLE;
-			m_currentRow = 0;
 		}
 		
 	}
@@ -163,7 +154,23 @@ void Player::cleanup()
 
 void Player::onCollision(std::shared_ptr<SDLGameObject> pOther)
 {
-	m_position = m_lastSafeLocation;
+	// Check if the player is colliding with a wall
+	if (pOther->getCollider().GetTag() == "Wall")
+	{
+		m_bIsColliding = true;
+		m_position = m_lastSafeLocation;
+	}
+
+	// Check if the player is colliding with an AmmoDrop
+	if (pOther->getCollider().GetTag() == "AmmoDrop")
+	{
+		// Add ammo
+		m_ammo += 10;
+		// TODO - Play sound
+		// Remove the pickup
+		game::Instance()->removeObject(pOther);
+	}
+	
 	m_pCollider->Update();
 	m_bIsColliding = false;
 }
