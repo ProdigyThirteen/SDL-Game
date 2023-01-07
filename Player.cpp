@@ -67,6 +67,12 @@ void Player::draw()
 
 void Player::update()
 {
+	// Check health
+	if (m_health <= 0)
+	{
+		game::Instance()->gameOver(false);
+	}
+
 	setRotation();
 	setTexture();
 
@@ -180,7 +186,7 @@ void Player::onCollision(std::shared_ptr<SDLGameObject> pOther)
 
 	else if (pOther->getTag() == "LevelExit" && game::Instance()->getEnemiesRemaining() == 0)
 	{
-		game::Instance()->gameOver();
+		game::Instance()->gameOver(true);
 	}
 	
 	m_pCollider->Update();

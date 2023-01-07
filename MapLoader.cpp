@@ -13,6 +13,7 @@
 #include "Tilemap.h"
 #include "AmmoDrop.h"
 #include "Enemy.h"
+#include "LevelExit.h"
 
 // I totally didn't find this on stackoverflow, I swear
 Uint32 MapLoader::getPixel(SDL_Surface* surface, int x, int y)
@@ -121,6 +122,12 @@ bool MapLoader::loadMap(const char* path)
 				game::Instance()->addObject(std::make_shared<Enemy>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, 48, 48, "enemyIdle")));
 				tilemap.get()->setTile(x, y, FLOOR);
 				enemyCount++;
+			}
+			else if (r == 0 && g == 0 && b == 255)
+			{
+				//Level exit
+				game::Instance()->addObject(std::make_shared<LevelExit>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, 32, 32, "exit")));
+				tilemap.get()->setTile(x, y, FLOOR);
 			}
 			else
 			{

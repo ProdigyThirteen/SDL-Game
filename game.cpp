@@ -143,6 +143,7 @@ void game::loadAssets()
 	Renderer::loadTexture("assets/world/Wall.png", "wall");
 	Renderer::loadTexture("assets/world/Floor.png", "floor");
 	Renderer::loadTexture("assets/world/crate.png", "crate");
+	Renderer::loadTexture("assets/world/exit.png", "exit");
 	Renderer::loadTexture("assets/BulletProjectile.png", "bullet");
 	Renderer::loadTexture("assets/Machinegun.png", "gun");
 	Renderer::loadTexture("assets/ui/Bullet.png", "ui_bullet");
@@ -232,7 +233,7 @@ void game::update()
 
 	inputHandler::update();
 	if (inputHandler::isKeyDown(SDL_SCANCODE_ESCAPE))
-		gameOver();
+		gameOver(true);
 	
 }
 
@@ -298,10 +299,16 @@ void game::partialCleanup()
 	m_isRunning = true;
 }
 
-void game::gameOver()
+void game::gameOver(bool win)
 {
+	m_hasWon = win;
 	m_isRunning = false;
-	UI::drawText("Game Over", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, { 255, 0, 0, 255 });
+
+	if (!win)
+		UI::drawText("Game Over", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, { 255, 0, 0, 255 });	
+	else
+		UI::drawText("Victory!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, { 0, 255, 0, 255 });
+		
 	Renderer::present();
 	SDL_Delay(3000);	
 }

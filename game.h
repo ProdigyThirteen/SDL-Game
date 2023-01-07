@@ -63,7 +63,7 @@ public:
 	void cleanup(); // For ending the game
 	void partialCleanup(); // For resetting the game
 	void tick();
-	void gameOver();
+	void gameOver(bool win);
 
 	// Getters
 	bool isRunning() { return m_isRunning; }

@@ -9,6 +9,8 @@
 Enemy::Enemy(const AssetLoader* pParams)
 	: Character(pParams, true, new CircleCollider(m_position, 8, 24, 24, false, "Enemy"), "Enemy")
 {
+	m_maxHealth = 4;
+	m_fireRate = 24;
 	m_friction = 10;
 	m_maxSpeed = 45;
 	m_speed = 30;
