@@ -28,7 +28,9 @@ private:
 	Vec2 m_CameraPos = Vec2(0, 0);
 
 	bool m_isRunning = false;
+	bool m_hasWon = false;
 	int m_currentFrame = 0;
+	int m_enemiesRemaining = 0;
 
 	// Delta time
 	int m_lastTime = 0;
@@ -54,11 +56,14 @@ public:
 	}
 
 	bool init();
+	bool setup();
 	void render();
 	void update();
 	void handleEvents();
-	void cleanup();
+	void cleanup(); // For ending the game
+	void partialCleanup(); // For resetting the game
 	void tick();
+	void gameOver();
 
 	// Getters
 	bool isRunning() { return m_isRunning; }
@@ -67,9 +72,15 @@ public:
 	float getDeltaTime() { return m_deltaTime; }
 	std::vector<std::shared_ptr<SDLGameObject>> getGameObjects() { return m_gameObjects; }
 	std::shared_ptr<SDLGameObject> getPlayer();
+	bool hasWon() { return m_hasWon; }
+	
 	// Object management
 	void addObject(std::shared_ptr<SDLGameObject> obj);
 	void removeObject(std::shared_ptr<SDLGameObject> obj);
+
+	// Misc
+	int getEnemiesRemaining() { return m_enemiesRemaining; }
+	void setEnemiesRemaining(int num) { m_enemiesRemaining = num; }
 	
 };
 

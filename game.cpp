@@ -91,9 +91,13 @@ bool game::init()
 		return false;
 	}
 
-	// Game setup
 	loadAssets();
 
+	return true;
+}
+
+bool game::setup()
+{
 	// Load a random level
 	int choice = rand() % 2;
 
@@ -125,9 +129,8 @@ bool game::init()
 		Utils::SetConsoleColour(Utils::ConsoleColour::WHITE);
 		return false;
 	}
-	
+
 	m_isRunning = true;
-	return true;
 }
 
 void game::loadAssets()
@@ -190,6 +193,7 @@ void game::handleEvents()
 			break;
 		case SDL_QUIT:
 			m_isRunning = false;
+			m_hasWon = true;
 			break;
 		default:
 			break;
@@ -228,7 +232,7 @@ void game::update()
 
 	inputHandler::update();
 	if (inputHandler::isKeyDown(SDL_SCANCODE_ESCAPE))
-		m_isRunning = false;
+		gameOver();
 	
 }
 
@@ -241,6 +245,9 @@ void game::render()
 	{
 		obj->draw();
 	}
+
+	// Draw enemies remaining UI in top centre of screen, some weird math to position it about correctly
+	UI::drawText("Enemies remaining: " + std::to_string(m_enemiesRemaining), (SCREEN_WIDTH / 4) + (SCREEN_WIDTH / 8), 0, { 255, 0, 0, 255 });
 	
 	Renderer::present();
 }
@@ -275,6 +282,28 @@ void game::cleanup()
 	IMG_Quit();
 	Mix_Quit();
 	SDL_Quit();
+}
+
+void game::partialCleanup()
+{
+	printf("Running partial cleanup...\n");
+	m_isRunning = false;
+
+	// Clear all vectors
+	m_gameObjects.clear();
+	m_newObjects.clear();
+	m_deadObjects.clear();
+
+	// Reset game running
+	m_isRunning = true;
+}
+
+void game::gameOver()
+{
+	m_isRunning = false;
+	UI::drawText("Game Over", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, { 255, 0, 0, 255 });
+	Renderer::present();
+	SDL_Delay(3000);	
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~GETTERS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

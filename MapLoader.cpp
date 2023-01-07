@@ -66,6 +66,9 @@ bool MapLoader::loadMap(const char* path)
 	int tilemapWidth = surface->w;
 	int tilemapHeight = surface->h;
 
+	// Enemy count
+	int enemyCount = 0;
+
 	printf("Tilemap size: %d x %d\n", tilemapWidth, tilemapHeight);
 
 	// Create tilemap
@@ -115,8 +118,9 @@ bool MapLoader::loadMap(const char* path)
 			else if (r == 255 && g == 0 && b == 0)
 			{
 				//Enemy
-				tilemap.get()->setTile(x, y, FLOOR);
 				game::Instance()->addObject(std::make_shared<Enemy>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, 48, 48, "enemyIdle")));
+				tilemap.get()->setTile(x, y, FLOOR);
+				enemyCount++;
 			}
 			else
 			{
@@ -128,6 +132,9 @@ bool MapLoader::loadMap(const char* path)
 
 	// Create the player to ensure it's on top of everything
 	game::Instance()->addObject(std::make_shared<Player>(new AssetLoader(playerX, playerY, 48, 48, "playerIdle")));
+	
+	// Set enemy count
+	game::Instance()->setEnemiesRemaining(enemyCount);
 
 	SDL_FreeSurface(surface);
 	printf("Level loaded successfully\n");
@@ -138,11 +145,11 @@ bool MapLoader::loadMap(const char* path)
 /*
  COLOUR KEY:
 	OBJECT:	 R,   G,   B
-	WALL =   255, 255, 255
 	FLOOR =  0,   0,   0
+	WALL =   255, 255, 255
 	PLAYER = 255, 0,   255
-	ENEMY =  255, 0,   0
 	CRATE =  248, 178, 90
+	ENEMY =  255, 0,   0
 	AMMO =   0,   255, 0
 	EXIT =   0,   0,   255
 */

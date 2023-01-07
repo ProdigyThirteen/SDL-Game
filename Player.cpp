@@ -177,6 +177,11 @@ void Player::onCollision(std::shared_ptr<SDLGameObject> pOther)
 			bullet->SetCanDamagePlayer(false);
 		}
 	}
+
+	else if (pOther->getTag() == "LevelExit" && game::Instance()->getEnemiesRemaining() == 0)
+	{
+		game::Instance()->gameOver();
+	}
 	
 	m_pCollider->Update();
 	m_bIsColliding = false;

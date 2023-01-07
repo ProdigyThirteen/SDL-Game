@@ -1,0 +1,9 @@
+ COLOUR KEY:
+	OBJECT:	 R,   G,   B
+	FLOOR =  0,   0,   0
+	WALL =   255, 255, 255
+	PLAYER = 255, 0,   255
+	CRATE =  248, 178, 90
+	ENEMY =  255, 0,   0
+	AMMO =   0,   255, 0
+	EXIT =   0,   0,   255

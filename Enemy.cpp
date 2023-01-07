@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "game.h"
 #include "Bullet.h"
+#include "AmmoDrop.h"
 
 Enemy::Enemy(const AssetLoader* pParams)
 	: Character(pParams, true, new CircleCollider(m_position, 8, 24, 24, false, "Enemy"), "Enemy")
@@ -15,6 +16,9 @@ Enemy::Enemy(const AssetLoader* pParams)
 
 Enemy::~Enemy()
 {
+	// Drop ammo on death
+	game::Instance()->addObject(std::make_shared<AmmoDrop>(new AssetLoader(m_position.x, m_position.y, 32, 16, "gun")));
+	game::Instance()->setEnemiesRemaining(game::Instance()->getEnemiesRemaining() - 1);
 }
 
 void Enemy::draw()
