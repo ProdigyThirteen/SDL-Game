@@ -48,7 +48,7 @@ void Enemy::update()
 		if (m_fireRateCounter >= m_fireRate && distToPlayer.Length() < 200)
 		{
 			m_fireRateCounter = 0;
-			//Shoot(playerPos, 400, true);
+			Shoot(playerPos, 400, true);
 		}
 		// If the enemy is too far away from the player, move towards them
 		else if (distToPlayer.Length() > 200)
@@ -88,7 +88,8 @@ void Enemy::onCollision(std::shared_ptr<SDLGameObject> pOther)
 
 	if (pOther->getTag() == "Wall" || 
 		pOther->getTag() == "Player" || 
-		pOther->getTag() == "Crate")
+		pOther->getTag() == "Crate" ||
+		pOther->getTag() == "Enemy")
 	{
 		m_position = m_lastSafeLocation;
 	}
