@@ -4,7 +4,7 @@
 #include "RectCollider.h"
 
 Wall::Wall(const AssetLoader* pParams)
-	: SDLGameObject(pParams, true, new RectCollider(m_position, 16, 16, 0, 0, false, "Wall"))
+	: SDLGameObject(pParams, true, new RectCollider(m_position, 16, 16, 0, 0, false, "Wall"), "Wall")
 {
 	m_pCollider->Update();
 }

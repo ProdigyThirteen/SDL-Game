@@ -16,5 +16,6 @@ public:
 	static void cleanup();
 	static bool loadFont(std::string path, int size);
 	static void drawText(std::string text, int x, int y, SDL_Color color);
+	static void drawSprite(std::string textureID, int x, int y, int w, int h);
 };
 

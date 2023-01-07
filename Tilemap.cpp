@@ -4,7 +4,7 @@
 #include "game.h"
 
 Tilemap::Tilemap(int tilemapX, int tilemapY)
-	: SDLGameObject(true), m_tilemapX(tilemapX), m_tilemapY(tilemapY)
+	: SDLGameObject(true, "Tilemap"), m_tilemapX(tilemapX), m_tilemapY(tilemapY)
 {
 	m_tilemap = new int* [tilemapY];
 

@@ -4,8 +4,8 @@
 #include "game.h"
 
 
-Bullet::Bullet(const AssetLoader* pParams) 
-	: SDLGameObject(pParams, false, new CircleCollider(m_position, 4, 0, 0, false, "bullet"))
+Bullet::Bullet(const AssetLoader* pParams, bool canDamagePlayer) 
+	: SDLGameObject(pParams, false, new CircleCollider(m_position, 4, 2, 2, false, "Bullet"), "Bullet"), m_canDamagePlayer(canDamagePlayer)
 {
 	m_pCollider->Update();
 	m_friction = 0;

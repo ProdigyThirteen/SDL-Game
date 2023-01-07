@@ -62,12 +62,11 @@ public:
 
 	// Getters
 	bool isRunning() { return m_isRunning; }
-	//SDL_Renderer* getRenderer() { return m_pRenderer; }
 	Vec2 getCameraPos() { return m_CameraPos; }
 	void setCameraPos(Vec2 pos) { m_CameraPos = pos; }
 	float getDeltaTime() { return m_deltaTime; }
 	std::vector<std::shared_ptr<SDLGameObject>> getGameObjects() { return m_gameObjects; }
-
+	std::shared_ptr<SDLGameObject> getPlayer();
 	// Object management
 	void addObject(std::shared_ptr<SDLGameObject> obj);
 	void removeObject(std::shared_ptr<SDLGameObject> obj);

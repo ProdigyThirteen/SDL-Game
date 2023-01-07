@@ -3,8 +3,8 @@
 #include "Collider.h"
 #include "game.h"
 
-SDLGameObject::SDLGameObject(const AssetLoader* pParams, const bool isStaticObject, Collider* pCollider)
-	: GameObject(pParams), m_position(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_pCollider(pCollider), m_bIsStaticObject(isStaticObject)
+SDLGameObject::SDLGameObject(const AssetLoader* pParams, const bool isStaticObject, Collider* pCollider, const std::string tag)
+	: GameObject(pParams), m_position(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_pCollider(pCollider), m_bIsStaticObject(isStaticObject), m_tag(tag)
 {
 	m_width = pParams->getWidth();
 	m_height = pParams->getHeight();
@@ -12,8 +12,8 @@ SDLGameObject::SDLGameObject(const AssetLoader* pParams, const bool isStaticObje
 	m_currentRow = 1;
 }
 
-SDLGameObject::SDLGameObject(const AssetLoader* pParams, const bool isStaticObject)
-	: GameObject(pParams), m_position(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_pCollider(nullptr), m_bIsStaticObject(isStaticObject)
+SDLGameObject::SDLGameObject(const AssetLoader* pParams, const bool isStaticObject, const std::string tag)
+	: GameObject(pParams), m_position(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_pCollider(nullptr), m_bIsStaticObject(isStaticObject), m_tag(tag)
 {
 	m_width = pParams->getWidth();
 	m_height = pParams->getHeight();
@@ -21,8 +21,8 @@ SDLGameObject::SDLGameObject(const AssetLoader* pParams, const bool isStaticObje
 	m_currentRow = 1;
 }
 
-SDLGameObject::SDLGameObject(const bool isStaticObject) // TODO: Refactor game to add more game object variants
-	: GameObject(nullptr), m_position(0, 0), m_velocity(0, 0), m_pCollider(nullptr), m_bIsStaticObject(isStaticObject)
+SDLGameObject::SDLGameObject(const bool isStaticObject, const std::string tag)
+	: GameObject(nullptr), m_position(0, 0), m_velocity(0, 0), m_pCollider(nullptr), m_bIsStaticObject(isStaticObject), m_tag(tag)
 {
 	m_width = 0;
 	m_height = 0;

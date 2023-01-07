@@ -12,6 +12,7 @@
 #include "Wall.h"
 #include "Tilemap.h"
 #include "AmmoDrop.h"
+#include "Enemy.h"
 
 // I totally didn't find this on stackoverflow, I swear
 Uint32 MapLoader::getPixel(SDL_Surface* surface, int x, int y)
@@ -83,6 +84,7 @@ bool MapLoader::loadMap(const char* path)
 
 			if (r == 255 && g == 255 && b == 255)
 			{
+				// Wall
 				game::Instance()->addObject(std::make_shared<Wall>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, "wall")));
 				tilemap.get()->setTile(x, y, WALL);
 			}
@@ -91,9 +93,9 @@ bool MapLoader::loadMap(const char* path)
 				// Floor
 				tilemap.get()->setTile(x, y, FLOOR);
 			}
-			else if (r == 255 && g == 0 && b == 0)
+			else if (r == 255 && g == 0 && b == 255)
 			{
-				// Store the player position and place a floor tile
+				// Player
 				playerX = x * TILE_SIZE;
 				playerY = y * TILE_SIZE;
 				tilemap.get()->setTile(x, y, FLOOR);
@@ -110,9 +112,11 @@ bool MapLoader::loadMap(const char* path)
 				game::Instance()->addObject(std::make_shared<AmmoDrop>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, 32, 16, "gun")));
 				tilemap.get()->setTile(x, y, FLOOR);
 			}
-			else if (r == 0 && g == 0 && b == 255)
+			else if (r == 255 && g == 0 && b == 0)
 			{
-				//Exit
+				//Enemy
+				tilemap.get()->setTile(x, y, FLOOR);
+				game::Instance()->addObject(std::make_shared<Enemy>(new AssetLoader(x * TILE_SIZE, y * TILE_SIZE, 48, 48, "enemyIdle")));
 			}
 			else
 			{
@@ -133,10 +137,12 @@ bool MapLoader::loadMap(const char* path)
 
 /*
  COLOUR KEY:
-	WALL = 255, 255, 255
-	FLOOR = 0, 0, 0
-	PLAYER = 255, 0, 0
-	CRATE = 248, 178, 90
-	AMMO = 0, 255, 0
-	EXIT = 0, 0, 255
+	OBJECT:	 R,   G,   B
+	WALL =   255, 255, 255
+	FLOOR =  0,   0,   0
+	PLAYER = 255, 0,   255
+	ENEMY =  255, 0,   0
+	CRATE =  248, 178, 90
+	AMMO =   0,   255, 0
+	EXIT =   0,   0,   255
 */

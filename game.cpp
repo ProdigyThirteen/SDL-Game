@@ -135,12 +135,15 @@ void game::loadAssets()
 	// Textures
 	Renderer::loadTexture("assets/player/rifle.png", "playerIdle");
 	Renderer::loadTexture("assets/player/rifle_shooting.png", "playerShooting", 2);
+	Renderer::loadTexture("assets/enemy/pistol_idle.png", "enemyIdle");
+	Renderer::loadTexture("assets/enemy/pistol_shooting.png", "enemyShooting", 2);
 	Renderer::loadTexture("assets/world/Wall.png", "wall");
 	Renderer::loadTexture("assets/world/Floor.png", "floor");
 	Renderer::loadTexture("assets/world/crate.png", "crate");
 	Renderer::loadTexture("assets/BulletProjectile.png", "bullet");
 	Renderer::loadTexture("assets/Machinegun.png", "gun");
 	Renderer::loadTexture("assets/ui/Bullet.png", "ui_bullet");
+	Renderer::loadTexture("assets/ui/Heart.png", "ui_heart");
 
 	// Sounds
 	Sounds::loadSound("assets/sounds/gunshot.mp3", "gunshot");
@@ -272,4 +275,18 @@ void game::cleanup()
 	IMG_Quit();
 	Mix_Quit();
 	SDL_Quit();
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~GETTERS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+std::shared_ptr<SDLGameObject> game::getPlayer()
+{
+	// Find player in game objects
+	for (auto& obj : m_gameObjects)
+	{
+		if (obj->getTag() == "Player")
+			return obj;
+	}
+	
+	return nullptr;
 }

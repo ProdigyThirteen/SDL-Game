@@ -52,7 +52,9 @@ bool Collision::AABB(const Vec2& posA, const Vec2& posB, const int& widthA, cons
 bool Collision::Circle(const CircleCollider& self, const CircleCollider& other)
 {
 	int totalRadiusSquared = self.GetRadius() * self.GetRadius() + other.GetRadius() * other.GetRadius();
-	if (totalRadiusSquared >= (self.GetPosition() - other.GetPosition()).LengthSq())
+
+	// check if the circles are colliding, accounting for the offset
+	if (totalRadiusSquared >= (self.GetPosition() + self.GetOffset() - other.GetPosition() - other.GetOffset()).LengthSq())
 	{
 		return true;
 	}

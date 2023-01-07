@@ -23,15 +23,16 @@ protected:
 	float m_rotation;
 	
 	std::string m_textureID;
+	const std::string m_tag;
 
 	Collider* m_pCollider;
 	bool m_bIsColliding = false;
 	const bool m_bIsStaticObject;
 
 public:
-	SDLGameObject(const AssetLoader* pParams, const bool isStaticObject, Collider* pCollider);
-	SDLGameObject(const AssetLoader* pParams, const bool isStaticObject);
-	SDLGameObject(const bool isStaticObject);
+	SDLGameObject(const AssetLoader* pParams, const bool isStaticObject, Collider* pCollider, const std::string tag);
+	SDLGameObject(const AssetLoader* pParams, const bool isStaticObject, const std::string tag);
+	SDLGameObject(const bool isStaticObject, const std::string tag);
 	~SDLGameObject();
 	
 	virtual void draw() = 0;
@@ -45,4 +46,5 @@ public:
 	Collider& getCollider() { return *m_pCollider; }
 	bool getIsStatic() { return m_bIsStaticObject; }
 	Vec2 getPosition() { return m_position; }
+	std::string getTag() { return m_tag; }
 };

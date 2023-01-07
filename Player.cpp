@@ -12,7 +12,7 @@
 #include "Bullet.h"
 
 Player::Player(const AssetLoader* pParams) 
-	: SDLGameObject(pParams, false, new CircleCollider(m_position, 8, 24, 24, false, "player"))
+	: Character(pParams, false, new CircleCollider(m_position, 8, 24, 24, false, "player"), "Player")
 {
 	m_lastSafeLocation = m_position;
 	m_friction = 10;
@@ -44,7 +44,7 @@ void Player::setTexture()
 
 void Player::draw()
 {
-	m_pCollider->Debug();
+	//m_pCollider->Debug();
 	switch (m_playerState)
 	{
 	case IDLE:
@@ -57,7 +57,12 @@ void Player::draw()
 	}
 
 	// Draw ammo
-	UI::drawText(std::to_string(m_ammo), 10, 10, { 255, 255, 255, 255 });
+	UI::drawSprite("ui_bullet", 10, 12, 32, 32);
+	UI::drawText(std::to_string(m_ammo), 40, 10, { 255, 255, 255, 255 });
+
+	// Draw health
+	UI::drawSprite("ui_heart", 10, 52, 32, 32);
+	UI::drawText(std::to_string(m_health), 40, 50, { 255, 255, 255, 255 });
 }
 
 void Player::update()
@@ -95,36 +100,12 @@ void Player::update()
 		if (m_fireRateCounter >= m_fireRate && m_ammo > 0)
 		{
 			m_fireRateCounter = 0;
-			
-			// Calculate bullet direction
-			Vec2* vec = inputHandler::getMousePosition();
-			float x = vec->x - (m_position.x + m_width / 2) + game::Instance()->getCameraPos().x;
-			float y = vec->y - (m_position.y + m_height / 2) + game::Instance()->getCameraPos().y;
-			float angle = (float)(atan2(y, x) * 180 / M_PI);
-			Vec2 direction = Vec2(cos(angle * M_PI / 180), sin(angle * M_PI / 180));
-			direction.Normalize();
 
-			// Calculate bullet offset
-			Vec2 offset = Vec2(cos(angle * M_PI / 180), sin(angle * M_PI / 180));
-			offset *= m_bulletOffset;
+			Vec2 target = *inputHandler::getMousePosition();
+			target.x += game::Instance()->getCameraPos().x;
+			target.y += game::Instance()->getCameraPos().y;
 
-			// Calculate the bullet position
-			Vec2 bulletPosition = Vec2(m_position.x + (m_width / 2), m_position.y + (m_height / 2));
-			bulletPosition += offset;
-			
-			// Create a bullet
-			std::shared_ptr<SDLGameObject> temp = std::make_shared<Bullet>(new AssetLoader(bulletPosition.x + direction.x, bulletPosition.y + direction.y, 8, 8, "bullet"));
-
-			// Set the bullet velocity
-			temp->setVelocity(direction * m_bulletSpeed);
-
-			// Add the bullet to the game object vector
-			game::Instance()->addObject(temp);
-
-			// Play the shooting sound
-			Sounds::playSound("gunshot");
-
-			// Subtract ammo
+			Shoot(target, 600, false);
 			m_ammo--;
 		}
 
@@ -155,20 +136,46 @@ void Player::cleanup()
 void Player::onCollision(std::shared_ptr<SDLGameObject> pOther)
 {
 	// Check if the player is colliding with a wall
-	if (pOther->getCollider().GetTag() == "Wall")
+	if (pOther->getCollider().GetTag() == "Wall" || pOther->getCollider().GetTag() == "Crate")
 	{
-		m_bIsColliding = true;
 		m_position = m_lastSafeLocation;
 	}
 
 	// Check if the player is colliding with an AmmoDrop
-	if (pOther->getCollider().GetTag() == "AmmoDrop")
+	else if (pOther->getCollider().GetTag() == "AmmoDrop")
 	{
-		// Add ammo
-		m_ammo += 10;
-		// TODO - Play sound
-		// Remove the pickup
+		// Add ammo, respecting max ammo
+		if (m_ammo + 10 > m_maxAmmo)
+			m_ammo = m_maxAmmo;
+		else
+			m_ammo += 10;
+
 		game::Instance()->removeObject(pOther);
+	}
+
+	// Check if the player is colliding with an Enemy
+	else if (pOther->getCollider().GetTag() == "Enemy")
+	{
+		// Take damage
+		m_health--;
+		
+		// Knock player back relative to enemy position
+		Vec2 enemyPos = pOther->getPosition();
+		Vec2 playerPos = m_position;
+		Vec2 knockback = enemyPos - playerPos;
+		knockback.Normalize();
+		m_acceleration.x = knockback.x * -150;
+		m_acceleration.y = knockback.y * -150;
+	}
+
+	else if (pOther->getCollider().GetTag() == "Bullet")
+	{
+		auto bullet = std::dynamic_pointer_cast<Bullet>(pOther);
+		if (bullet->CanDamagePlayer())
+		{
+			m_health--;
+			bullet->SetCanDamagePlayer(false);
+		}
 	}
 	
 	m_pCollider->Update();

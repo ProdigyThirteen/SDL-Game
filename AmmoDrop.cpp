@@ -3,7 +3,7 @@
 #include "RectCollider.h"
 
 AmmoDrop::AmmoDrop(const AssetLoader* pParams)
-	: SDLGameObject(pParams, true, new RectCollider(m_position, 16, 16, 0, 0, true, "AmmoDrop"))
+	: SDLGameObject(pParams, true, new RectCollider(m_position, 16, 16, 0, 0, true, "AmmoDrop"), "Ammo")
 {
 	m_pCollider->Update();
 	m_friction = 0;

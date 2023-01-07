@@ -4,7 +4,7 @@
 #include "RectCollider.h"
 
 Crate::Crate(const AssetLoader* pParams)
-	: SDLGameObject(pParams, true, new RectCollider(m_position, 16, 16, 0, 0, false, "Crate"))
+	: SDLGameObject(pParams, true, new RectCollider(m_position, 16, 16, 0, 0, false, "Crate"), "Crate")
 {
 	m_pCollider->Update();
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "SDLGameObject.h"
+#include "Character.h"
 
 enum playerStateEnum
 {
@@ -9,7 +9,7 @@ enum playerStateEnum
 	SHOOTING
 };
 
-class Player : public SDLGameObject
+class Player : public Character
 {
 private:
 	int m_playerState = IDLE;
@@ -20,12 +20,8 @@ private:
 	void setTexture();
 
 	// Gun variables
-	const int m_bulletOffset = 48; // Distance from player to spawn bullet
-	const int m_fireRate = 8; // How many frames between each bullet
-	int m_fireRateCounter = 0;
-	const int m_bulletSpeed = 600; 
 	const int m_maxAmmo = 99;
-	int m_ammo = 10;
+	int m_ammo = 2000;
 	
 public:
 	Player(const AssetLoader* pParams);

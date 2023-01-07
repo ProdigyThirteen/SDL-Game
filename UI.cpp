@@ -40,3 +40,15 @@ void UI::drawText(std::string text, int x, int y, SDL_Color color)
 	SDL_FreeSurface(surface);
 	SDL_DestroyTexture(texture);
 }
+
+void UI::drawSprite(std::string textureID, int x, int y, int w, int h)
+{
+	SDL_Rect destRect;
+
+	destRect.w = w;
+	destRect.h = h;
+	destRect.x = x;
+	destRect.y = y;
+
+	SDL_RenderCopy(m_pRenderer, Renderer::getTexture(textureID), NULL, &destRect);
+}
