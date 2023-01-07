@@ -100,7 +100,7 @@ bool game::init()
 	switch (choice)
 	{
 	case 0:
-		if (!MapLoader::loadMap("levels/2.png"))
+		if (!MapLoader::loadMap("levels/1.png"))
 		{
 			Utils::SetConsoleColour(Utils::ConsoleColour::RED);
 			printf("Error loading map\n");

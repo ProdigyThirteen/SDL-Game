@@ -21,7 +21,7 @@ private:
 
 	// Gun variables
 	const int m_maxAmmo = 99;
-	int m_ammo = 2000;
+	int m_ammo = 30;
 	
 public:
 	Player(const AssetLoader* pParams);

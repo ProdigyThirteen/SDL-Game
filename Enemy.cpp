@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Player.h"
 #include "game.h"
+#include "Bullet.h"
 
 Enemy::Enemy(const AssetLoader* pParams)
 	: Character(pParams, true, new CircleCollider(m_position, 8, 24, 24, false, "Enemy"), "Enemy")
@@ -69,13 +70,18 @@ void Enemy::cleanup()
 
 void Enemy::onCollision(std::shared_ptr<SDLGameObject> pOther)
 {
-	if (pOther->getTag() == "Bullet")
+	if (pOther->getCollider().GetTag() == "Bullet")
 	{
-		m_health -= 1;
-		printf("Enemy health = %i\n", m_health);
+		auto bullet = std::dynamic_pointer_cast<Bullet>(pOther);
+
+		// Assume that a bullet unable to damage the player should damage the enemy
+		if (!bullet->CanDamagePlayer())
+		{
+			m_health--;
+		}
 	}
 
-	if (pOther->getTag() == "Player")
+	else if (pOther->getTag() == "Player")
 	{
 		m_lastSafeLocation = m_position;
 	}
